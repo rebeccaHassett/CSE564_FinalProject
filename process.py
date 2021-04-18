@@ -41,6 +41,6 @@ def getData():
     new_df["Average Score (SAT Writing)"].fillna(round(new_df["Average Score (SAT Writing)"].mean()), inplace=True)
 
     new_df.dropna(inplace=True)
-
-    return 1;
+    new_df =  [new_df.columns.values.tolist()] + new_df.values.tolist()
+    return new_df;
 

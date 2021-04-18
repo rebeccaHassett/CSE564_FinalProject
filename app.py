@@ -13,9 +13,9 @@ def index():
 
 @app.route("/api")
 def get_data():
-    test_data = getData()
+    data_set = getData()
     data = {
-        "test_integer":test_data
+        "data_set":data_set
     }
     return data
 
