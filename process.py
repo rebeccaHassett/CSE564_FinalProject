@@ -21,7 +21,7 @@ new_df.drop('Longitude', axis=1, inplace=True)
 new_df.drop('Phone Number', axis=1, inplace=True)
 new_df.drop('Zip Code', axis=1, inplace=True)
 
-#covert strings with % to a float number
+#convert strings with % to a float number
 new_df["Percent White"] = new_df["Percent White"].str.replace('%','').astype(float)
 new_df["Percent Black"] = new_df["Percent Black"].str.replace('%','').astype(float) 
 new_df["Percent Hispanic"] = new_df["Percent Hispanic"].str.replace('%','').astype(float) 
@@ -92,4 +92,23 @@ def getPCAData():
     pca_data = np.transpose(new_pc).tolist()
 
     return exp_var,cum_exp_var,attribute,eigenvector,pca_data
-    
+
+def KMeansClustering():
+    copy_df = new_df.copy(deep=True)
+    km = KMeans(n_clusters=6)
+    km.fit(np.array(copy_df))
+    copy_df['Class'] = km.labels_
+    cluster_data = np.array(copy_df.iloc[:, -1:])
+    return cluster_data
+
+def getParallelCoordsData(cluster_data):
+    cols = new_df.columns.values
+
+    parallel_coords = []
+    for index, row in new_df.iterrows():
+        parallel_coord = {}
+        for col in cols:
+            parallel_coord[col] = row[col]
+        parallel_coord["color"] = cluster_data[index][0]
+        parallel_coords.append(parallel_coord)
+    return parallel_coords
