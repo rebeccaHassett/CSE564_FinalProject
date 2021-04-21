@@ -1,6 +1,6 @@
 axios.get("http://127.0.0.1:5000/api").then(function ({ data }) {
   // add function calls here and implement functions below this axios function.
-  //drawParallelCoordinates(data.parallel_coords_data);
+  drawParallelCoordinates(data.parallel_coords_data, data.column_names);
   drawBarChart(data.bar_plot_data);
   drawScreePlot(data);
   drawBiPlot(data);

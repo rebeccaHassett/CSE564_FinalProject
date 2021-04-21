@@ -1,30 +1,50 @@
-function drawParallelCoordinates(data) {
-    var margin = {top: 100, right: 50, bottom: 50, left: 100},
-        width = 960 - margin.left - margin.right,
-        height = 500 - margin.top - margin.bottom;
-
-    var dimensions = [];
-    if (selectedAxisOrdering.length === 15) {
-        for (i = 0; i < selectedAxisOrdering.length; i++) {
-            dimensions.push(selectedAxisOrdering[i]);
-        }
-    } else {
-        dimensions.push("radius_mean");
-        dimensions.push("texture_mean");
-        dimensions.push("perimeter_mean");
-        dimensions.push("smoothness_mean");
-        dimensions.push("compactness_mean");
-        dimensions.push("concavity_mean");
-        dimensions.push("concave points_mean");
-        dimensions.push("symmetry_mean");
-        dimensions.push("fractal_dimension_mean");
-        dimensions.push("radius_se");
-        dimensions.push("texture_se");
-        dimensions.push("perimeter_se");
-        dimensions.push("area_se");
-        dimensions.push("smoothness_se");
-        dimensions.push("compactness_se");
+function appendColorLegend(svg, type) {
+    var translateY = -20;
+    if (type === "MDS") {
+        translateY = 85;
     }
+    colorLegendData = [0, 1, 2, 3, 4, 5];
+
+    var colorLegendG = svg.selectAll("g")
+        .data(colorLegendData);
+
+    var colorLegend = colorLegendG.enter()
+        .append("g")
+        .attr("transform", function (d) {
+            return "translate(" + d * 30 + "," + translateY + ")"
+        });
+
+    var circle = colorLegend.append("circle")
+        .attr("r", 8)
+        .attr("fill", function (d) {
+            return colors(d)
+        })
+        .attr("transform", "translate(" + 700 + ",-50)");
+
+    colorLegend.append("text")
+        .attr("dx", -5)
+        .attr("dy", -20)
+        .attr("font-weight", "bold")
+        .text(function (d) {
+            return d + 1
+        })
+        .attr("transform", function (d) {
+            return "translate(" + 700 + ",-50)"
+        });
+}
+
+function drawParallelCoordinates(data, dimensions) {
+    console.log(data);
+
+    var colors = d3.scaleOrdinal(d3.schemeCategory10);
+
+    var svg = d3
+    .select("body")
+    .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     var x = d3.scaleBand().rangeRound([0, width]).padding(1),
         y = {},
@@ -36,11 +56,11 @@ function drawParallelCoordinates(data) {
         foreground,
         extents;
 
-    var svg = d3.select("#parallelPlot").append("svg")
+    /*var svg = d3.select("#parallelPlot").append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
         .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");*/
 
     var quant_p = function (v) {
         return (parseFloat(v) == v) || (v == "")
@@ -71,7 +91,7 @@ function drawParallelCoordinates(data) {
         return [0, 0];
     });
 
-    appendColorLegend(svg, "ParallelPlot");
+    //appendColorLegend(svg, "ParallelPlot");
 
     // Add grey background lines for context.
     background = svg.append("g")

@@ -101,7 +101,7 @@ def KMeansClustering():
     cluster_data = np.array(copy_df.iloc[:, -1:])
     return cluster_data
 
-def getParallelCoordsData(cluster_data):
+def getParallelCoordsData():#cluster_data):
     cols = new_df.columns.values
 
     parallel_coords = []
@@ -109,6 +109,21 @@ def getParallelCoordsData(cluster_data):
         parallel_coord = {}
         for col in cols:
             parallel_coord[col] = row[col]
-        parallel_coord["color"] = cluster_data[index][0]
+        parallel_coord["color"] = getBoroughId(row["Borough"])#cluster_data[index][0]
         parallel_coords.append(parallel_coord)
     return parallel_coords
+
+def getColumnNames():
+    return new_df.columns.values.tolist()
+
+def getBoroughId(borough):
+    if borough == "Manhattan":
+        return 1
+    if borough == "Brooklyn":
+        return 2
+    if borough == "Bronx":
+        return 3
+    if borough == "Queens":
+        return 4
+    if borough == "Staten Island":
+        return 5
