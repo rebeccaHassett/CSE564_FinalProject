@@ -1,6 +1,7 @@
 axios.get("http://127.0.0.1:5000/api").then(function ({ data }) {
   // add function calls here and implement functions below this axios function.
   drawParallelCoordinates(data.parallel_coords_data, data.column_names);
+  drawScatterplotMatrix();
   drawBarChart(data.bar_plot_data);
   drawScreePlot(data);
   drawBiPlot(data);
@@ -8,7 +9,8 @@ axios.get("http://127.0.0.1:5000/api").then(function ({ data }) {
 });
 var margin = { top: 50, right: 70, bottom: 70, left: 70 },
   width = 500 - margin.left - margin.right,
-  height = 300 - margin.top - margin.bottom;
+  height = 300 - margin.top - margin.bottom,
+  parallelCoordsWidth = 960 - margin.left - margin.right;
 
 
 function drawBarChart(data) {

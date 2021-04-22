@@ -34,19 +34,26 @@ function appendColorLegend(svg, type) {
 }
 
 function drawParallelCoordinates(data, dimensions) {
-    console.log(data);
-
     var colors = d3.scaleOrdinal(d3.schemeCategory10);
 
     var svg = d3
     .select("body")
     .append("svg")
-    .attr("width", width + margin.left + margin.right)
+    .attr("width", parallelCoordsWidth + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
     .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    .attr("transform", "translate(" + 10 + "," + (margin.top + 30) + ")");
 
-    var x = d3.scaleBand().rangeRound([0, width]).padding(1),
+    svg
+      .append("text")
+      .attr("x", 300)
+      .attr("y", -65)
+      .text("Parallel Coordinates Plot")
+      .style("font-weight", "bold")
+      .style("font-size", "20px");
+
+
+    var x = d3.scaleBand().rangeRound([0, parallelCoordsWidth]).padding(1),
         y = {},
         dragging = {};
 
@@ -55,12 +62,6 @@ function drawParallelCoordinates(data, dimensions) {
         background,
         foreground,
         extents;
-
-    /*var svg = d3.select("#parallelPlot").append("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
-        .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");*/
 
     var quant_p = function (v) {
         return (parseFloat(v) == v) || (v == "")
@@ -85,7 +86,7 @@ function drawParallelCoordinates(data, dimensions) {
                 }))
                 .range([height, 0], 1);
         }
-    })
+    });
 
     extents = dimensions.map(function (p) {
         return [0, 0];
@@ -129,7 +130,7 @@ function drawParallelCoordinates(data, dimensions) {
                 background.attr("visibility", "hidden");
             })
             .on("drag", function (d) {
-                dragging[d] = Math.min(width, Math.max(0, d3.event.x));
+                dragging[d] = Math.min(parallelCoordsWidth, Math.max(0, d3.event.x));
                 foreground.attr("d", path);
                 dimensions.sort(function (a, b) {
                     return position(a) - position(b);
@@ -203,11 +204,11 @@ function drawParallelCoordinates(data, dimensions) {
         for (var i = 0; i < dimensions.length; ++i) {
             if (d3.event.target == y[dimensions[i]].brush) {
                 extents[i] = d3.event.selection.map(y[dimensions[i]].invert, y[dimensions[i]]);
-
             }
         }
 
         foreground.style("display", function (d) {
+            console.log(extents[i]);
             return dimensions.every(function (p, i) {
                 if (extents[i][0] == 0 && extents[i][0] == 0) {
                     return true;

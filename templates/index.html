@@ -7,6 +7,47 @@
     <title>Document</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
+<style>
+
+    .background path {
+        fill: none;
+        stroke: #ddd;
+        stroke-opacity: .4;
+        shape-rendering: crispEdges;
+    }
+
+    .foreground path {
+        fill: none;
+        stroke-opacity: .7;
+    }
+
+    .brush .extent {
+        fill-opacity: .3;
+        stroke: #fff;
+        shape-rendering: crispEdges;
+    }
+
+    .axis line,
+    .axis path {
+        fill: none;
+        stroke: #000;
+        shape-rendering: crispEdges;
+    }
+
+    .axis text {
+        text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
+        cursor: move;
+    }
+
+    .axis .axis-label {
+        font-size: 11px;
+    }
+
+    .frame {
+        fill: none;
+        stroke: #aaa;
+    }
+</style>
 <body>
     <script src="http://d3js.org/d3.v4.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -17,6 +58,7 @@
     <script src="{{url_for('static', filename='index.js')}}"></script>
     <script src="{{url_for('static', filename='screeplot.js')}}"></script>
     <script src="{{url_for('static', filename='biplot.js')}}"></script>
+    <script src="{{url_for('static', filename='scatterplotmatrix.js')}}"></script>
     <script src="{{url_for('static', filename='parallelcoordinates.js')}}"></script>
 
     <p>Dashboard</p>
