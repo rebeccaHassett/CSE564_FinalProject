@@ -3,7 +3,7 @@ from sklearn.preprocessing import StandardScaler
 import numpy as np
 import pandas as pd
 from flask import Flask,render_template,make_response
-from process import getData,getBarPlotData,getPCAData, getParallelCoordsData, getColumnNames, KMeansClustering
+from process import getData,getBarPlotData,getPCAData, getParallelCoordsData, getColumnNames, getScatterplotMatrixData
 
 app = Flask(__name__)
 
@@ -28,8 +28,8 @@ def get_data():
     data_set,dict_df = getData()
     bar_plot_data = getBarPlotData()
     exp_var,cum_exp_var,attribute,eigenvector,pca_data = getPCAData()
-    #cluster_data = KMeansClustering()
-    parallel_coords_data = getParallelCoordsData()#cluster_data)
+    parallel_coords_data = getParallelCoordsData()
+    scatterplotmatrix_data = getScatterplotMatrixData()
     column_names = getColumnNames()
     data = {
         "data_set":data_set,
@@ -41,6 +41,7 @@ def get_data():
         "eigenvector":eigenvector,
         "pca_data":pca_data,
         "parallel_coords_data":parallel_coords_data,
+        "scatterplotmatrix_data":scatterplotmatrix_data,
         "column_names":column_names
     }
     return data

@@ -147,3 +147,13 @@ def getBoroughId(borough):
         return 4
     if borough == "Staten Island":
         return 5
+
+def getScatterplotMatrixData():
+    scatterplotmatrix_data = []
+    for index, row in new_df.iterrows():
+        scatterplotmatrix_row = {"Percent Black": row["Percent Black"], "Student Enrollment": row["Student Enrollment"],
+                                 "Percent Tested": row["Percent Tested"], "Average SAT Score": row["Average Score (SAT Math)"] + row["Average Score (SAT Reading)"] + row["Average Score (SAT Writing)"],
+                                 "BoroughId": getBoroughId(row["Borough"])}
+        scatterplotmatrix_data.append(scatterplotmatrix_row)
+    return scatterplotmatrix_data
+

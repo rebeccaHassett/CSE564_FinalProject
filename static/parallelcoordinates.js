@@ -37,20 +37,20 @@ function drawParallelCoordinates(data, dimensions) {
     var colors = d3.scaleOrdinal(d3.schemeCategory10);
 
     var svg = d3
-    .select("body")
-    .append("svg")
-    .attr("width", parallelCoordsWidth + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-    .attr("transform", "translate(" + 10 + "," + (margin.top + 30) + ")");
+        .select("body")
+        .append("svg")
+        .attr("width", parallelCoordsWidth + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + 10 + "," + (margin.top + 30) + ")");
 
     svg
-      .append("text")
-      .attr("x", 300)
-      .attr("y", -65)
-      .text("Parallel Coordinates Plot")
-      .style("font-weight", "bold")
-      .style("font-size", "20px");
+        .append("text")
+        .attr("x", 300)
+        .attr("y", -65)
+        .text("Parallel Coordinates Plot")
+        .style("font-weight", "bold")
+        .style("font-size", "20px");
 
 
     var x = d3.scaleBand().rangeRound([0, parallelCoordsWidth]).padding(1),
