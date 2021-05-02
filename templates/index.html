@@ -86,6 +86,23 @@ circle.hidden {
   fill-opacity: .125;
   stroke: #fff;
 }
+            .boroughs {
+                fill: rgb(222,235,247);
+                stroke: #000;
+                stroke-width: 0.5px;
+            }
+            .tooltip {
+                position: absolute;
+                font-size: 12px;
+                width:  auto;
+                height: auto;
+                pointer-events: none;
+                background-color: white;
+            }
+            .circle-hover {
+                stroke: #000;
+                stroke-width: 1px;
+            }
 </style>
 <body>
     <script src="http://d3js.org/d3.v4.min.js"></script>
@@ -99,6 +116,7 @@ circle.hidden {
     <script src="{{url_for('static', filename='biplot.js')}}"></script>
     <script src="{{url_for('static', filename='scatterplotmatrix.js')}}"></script>
     <script src="{{url_for('static', filename='parallelcoordinates.js')}}"></script>
+    <script src="{{url_for('static', filename='map.js')}}"></script>
 
     <p>Dashboard</p>
 </body>

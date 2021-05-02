@@ -1,11 +1,11 @@
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
-from sklearn.cluster import KMeans
 from datetime import datetime, timedelta
 # from sklearn.manifold import MDS
 
 import numpy as np
 import pandas as pd
+import json
 
 #drop the categorical variables
 df = pd.read_csv("data/scores.csv")
@@ -17,8 +17,6 @@ new_df.drop('Building Code', axis=1, inplace=True)
 new_df.drop('Street Address', axis=1, inplace=True)
 new_df.drop('City', axis=1, inplace=True)
 new_df.drop('State', axis=1, inplace=True)
-new_df.drop('Latitude', axis=1, inplace=True)
-new_df.drop('Longitude', axis=1, inplace=True)
 new_df.drop('Phone Number', axis=1, inplace=True)
 new_df.drop('Zip Code', axis=1, inplace=True)
 
@@ -82,7 +80,7 @@ def getBarPlotData():
 
 # def getHistogramData():
 def getPCAData():
-    numerical_df = new_df.drop(columns=['Borough', 'Start Time',"End Time"]) # drop categorical data, only numerical data for PCA
+    numerical_df = new_df.drop(columns=['Borough', 'Start Time',"End Time", "Longitude", "Latitude"]) # drop categorical data, only numerical data for PCA
     df_standard =  StandardScaler().fit_transform(numerical_df) 
     pca = PCA() 
     new_pc = pca.fit_transform(df_standard)  
@@ -94,19 +92,13 @@ def getPCAData():
 
     return exp_var,cum_exp_var,attribute,eigenvector,pca_data
 
-def KMeansClustering():
-    copy_df = new_df.copy(deep=True)
-    km = KMeans(n_clusters=6)
-    km.fit(np.array(copy_df))
-    copy_df['Class'] = km.labels_
-    cluster_data = np.array(copy_df.iloc[:, -1:])
-    return cluster_data
+def getParallelCoordsData():
+    parall_coords_df = new_df.drop(columns=['Latitude', 'Longitude'])
 
-def getParallelCoordsData():#cluster_data):
-    cols = new_df.columns.values
+    cols = parall_coords_df.columns.values
 
     parallel_coords = []
-    for index, row in new_df.iterrows():
+    for index, row in parall_coords_df.iterrows():
         parallel_coord = {}
         for col in cols:
             if(col == "Start Time" or col == "End Time"):
@@ -134,7 +126,8 @@ def roundTimeHelper(dt=None, roundTo=60):
    return dt + timedelta(0,rounding-seconds,-dt.microsecond)
 
 def getColumnNames():
-    return new_df.columns.values.tolist()
+    columns_df = new_df.drop(columns=['Latitude', 'Longitude'])
+    return columns_df.columns.values.tolist()
 
 def getBoroughId(borough):
     if borough == "Manhattan":
@@ -157,3 +150,14 @@ def getScatterplotMatrixData():
         scatterplotmatrix_data.append(scatterplotmatrix_row)
     return scatterplotmatrix_data
 
+def getBoroughData():
+    f = open('data/nyc.json')
+    data = json.load(f)
+    f.close()
+    return data
+
+def getLocationData():
+    location_data = []
+    for index, row in new_df.iterrows():
+        location_data.append({"longitude": row["Longitude"], "latitude": row["Latitude"], "BoroughId": getBoroughId(row["Borough"])})
+    return location_data

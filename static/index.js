@@ -5,7 +5,7 @@ axios.get("http://127.0.0.1:5000/api").then(function ({ data }) {
   drawBarChart(data.bar_plot_data);
   drawScreePlot(data);
   drawBiPlot(data);
-
+  drawMap(data.borough_data, data.location_data);
 });
 var margin = { top: 50, right: 70, bottom: 70, left: 70 },
   width = 500 - margin.left - margin.right,

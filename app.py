@@ -3,7 +3,7 @@ from sklearn.preprocessing import StandardScaler
 import numpy as np
 import pandas as pd
 from flask import Flask,render_template,make_response
-from process import getData,getBarPlotData,getPCAData, getParallelCoordsData, getColumnNames, getScatterplotMatrixData
+from process import getData,getBarPlotData,getPCAData, getParallelCoordsData, getColumnNames, getScatterplotMatrixData, getBoroughData, getLocationData
 
 app = Flask(__name__)
 
@@ -30,6 +30,8 @@ def get_data():
     exp_var,cum_exp_var,attribute,eigenvector,pca_data = getPCAData()
     parallel_coords_data = getParallelCoordsData()
     scatterplotmatrix_data = getScatterplotMatrixData()
+    borough_data = getBoroughData()
+    location_data = getLocationData()
     column_names = getColumnNames()
     data = {
         "data_set":data_set,
@@ -42,7 +44,9 @@ def get_data():
         "pca_data":pca_data,
         "parallel_coords_data":parallel_coords_data,
         "scatterplotmatrix_data":scatterplotmatrix_data,
-        "column_names":column_names
+        "column_names":column_names,
+        "borough_data": borough_data,
+        "location_data": location_data
     }
     return data
 
