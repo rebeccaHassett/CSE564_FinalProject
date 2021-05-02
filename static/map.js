@@ -23,7 +23,7 @@ function drawMap(boroughs, locations) {
         .attr("class", "boroughs")
         .attr("d", pathGenerator);
 
-        var addPointsToMap = function (locations) {
+    var addPointsToMap = function (locations) {
         var colorScale = d3.scaleOrdinal(d3.schemeCategory10);
 
         var radiusScale = d3.scaleSqrt()
@@ -63,7 +63,7 @@ function drawMap(boroughs, locations) {
                 .style("opacity", 0); // don't care about position!
         };
 
-        svg.selectAll("circle")
+        var circles = svg.selectAll("circle")
             .data(locations)
             .enter().append("circle")
             .attr("fill", function (d) {
@@ -75,9 +75,65 @@ function drawMap(boroughs, locations) {
             .attr("cy", function (d) {
                 return projection([+d.longitude, +d.latitude])[1];
             })
+            .attr("class","brushed")  //original color
             .attr("r", 3)
             .on("mouseover", tipMouseover)
             .on("mouseout", tipMouseout);
+
+
+        //create brush
+        var brush = d3.brush()
+            .on("brush", highlightBrushedCircles)
+            .on("end", brushEnd);
+
+        svg.call(brush);
+
+        function highlightBrushedCircles() {
+
+            if (d3.event.selection != null) {
+
+                // set circles to "non_brushed"
+                circles.attr("class", "non_brushed");
+
+                //coordinates describing the corners of the brush
+                var brush_coords = d3.brushSelection(this);
+
+                // set the circles within the brush to class "brushed" to style them accordingly
+                circles.filter(function () {
+
+                    var cx = d3.select(this).attr("cx"),
+                        cy = d3.select(this).attr("cy");
+
+                    return isBrushed(brush_coords, cx, cy);
+                })
+                    .attr("class", "brushed");
+
+            }
+        }
+
+        function isBrushed(brush_coords, cx, cy) {
+
+            //the corners of the brush
+            var x0 = brush_coords[0][0],
+                x1 = brush_coords[1][0],
+                y0 = brush_coords[0][1],
+                y1 = brush_coords[1][1];
+
+            //checks whether the circle is within the brush
+            return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1;
+        }
+
+        function brushEnd() {
+
+            if (!d3.event.selection) return;
+
+            // programmed clearing of brush after mouse-up
+            d3.select(this).call(brush.move, null);
+
+            //set all circles to original color
+            svg.selectAll(".non_brushed").classed("brushed", true);
+
+        }
 
         addLegend(colorScale);
     };
@@ -114,8 +170,28 @@ function drawMap(boroughs, locations) {
             .attr("y", 9)
             .attr("dy", ".35em")
             .style("text-anchor", "end")
+            .style("fill","black")
             .text(function (d) {
-                return d.toLowerCase();
+                if(d === 1)
+                {
+                    return "Manhattan";
+                }
+                else if(d === 2)
+                {
+                    return "Brooklyn";
+                }
+                else if(d === 3)
+                {
+                    return "Bronx";
+                }
+                else if(d === 4)
+                {
+                    return "Queens";
+                }
+                else if(d === 5)
+                {
+                    return "Staten Island";
+                }
             });
     };
 

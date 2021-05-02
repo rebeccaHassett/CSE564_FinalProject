@@ -5,7 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
 <style>
 
@@ -50,74 +51,97 @@
 
 
     .axis,
-.frame {
-  shape-rendering: crispEdges;
-}
+    .frame {
+        shape-rendering: crispEdges;
+    }
 
-.axis line {
-  stroke: #ddd;
-}
+    .axis line {
+        stroke: #ddd;
+    }
 
-.axis path {
-  display: none;
-}
+    .axis path {
+        display: none;
+    }
 
-.cell text {
-  font-weight: bold;
-  text-transform: capitalize;
-  fill: black;
-}
+    .cell text {
+        font-weight: bold;
+        text-transform: capitalize;
+        fill: black;
+    }
 
-.frame {
-  fill: none;
-  stroke: #aaa;
-}
+    .frame {
+        fill: none;
+        stroke: #aaa;
+    }
 
-circle {
-  fill-opacity: .7;
-}
+    circle {
+        fill-opacity: .7;
+    }
 
-circle.hidden {
-  fill: #ccc !important;
-}
+    circle.hidden {
+        fill: #ccc !important;
+    }
 
-.extent {
-  fill: #000;
-  fill-opacity: .125;
-  stroke: #fff;
-}
-            .boroughs {
-                fill: rgb(222,235,247);
-                stroke: #000;
-                stroke-width: 0.5px;
-            }
-            .tooltip {
-                position: absolute;
-                font-size: 12px;
-                width:  auto;
-                height: auto;
-                pointer-events: none;
-                background-color: white;
-            }
-            .circle-hover {
-                stroke: #000;
-                stroke-width: 1px;
-            }
+    .extent {
+        fill: #000;
+        fill-opacity: .125;
+        stroke: #fff;
+    }
+
+    .boroughs {
+        fill: rgb(222, 235, 247);
+        stroke: #000;
+        stroke-width: 0.5px;
+    }
+
+    .tooltip {
+        position: absolute;
+        font-size: 12px;
+        width: auto;
+        height: auto;
+        pointer-events: none;
+        background-color: white;
+    }
+
+    .circle-hover {
+        stroke: #000;
+        stroke-width: 1px;
+    }
+
+    .brushed {
+        stroke: black;
+        stroke-width: 0.5;
+        opacity: 0.95;
+
+    }
+
+    .non_brushed {
+
+        fill: grey;
+        opacity: 0.15;
+
+    }
 </style>
 <body>
-    <script src="http://d3js.org/d3.v4.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-    <script src="{{url_for('static', filename='index.js')}}"></script>
-    <script src="{{url_for('static', filename='screeplot.js')}}"></script>
-    <script src="{{url_for('static', filename='biplot.js')}}"></script>
-    <script src="{{url_for('static', filename='scatterplotmatrix.js')}}"></script>
-    <script src="{{url_for('static', filename='parallelcoordinates.js')}}"></script>
-    <script src="{{url_for('static', filename='map.js')}}"></script>
+<script src="http://d3js.org/d3.v4.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+<script src="{{ url_for('static', filename='index.js') }}"></script>
+<script src="{{ url_for('static', filename='screeplot.js') }}"></script>
+<script src="{{ url_for('static', filename='biplot.js') }}"></script>
+<script src="{{ url_for('static', filename='scatterplotmatrix.js') }}"></script>
+<script src="{{ url_for('static', filename='parallelcoordinates.js') }}"></script>
+<script src="{{ url_for('static', filename='map.js') }}"></script>
 
-    <p>Dashboard</p>
+<p>Dashboard</p>
 </body>
 </html>
