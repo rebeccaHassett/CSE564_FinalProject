@@ -1,38 +1,3 @@
-function appendColorLegend(svg, type) {
-    var translateY = -20;
-    if (type === "MDS") {
-        translateY = 85;
-    }
-    colorLegendData = [0, 1, 2, 3, 4, 5];
-
-    var colorLegendG = svg.selectAll("g")
-        .data(colorLegendData);
-
-    var colorLegend = colorLegendG.enter()
-        .append("g")
-        .attr("transform", function (d) {
-            return "translate(" + d * 30 + "," + translateY + ")"
-        });
-
-    var circle = colorLegend.append("circle")
-        .attr("r", 8)
-        .attr("fill", function (d) {
-            return colors(d)
-        })
-        .attr("transform", "translate(" + 700 + ",-50)");
-
-    colorLegend.append("text")
-        .attr("dx", -5)
-        .attr("dy", -20)
-        .attr("font-weight", "bold")
-        .text(function (d) {
-            return d + 1
-        })
-        .attr("transform", function (d) {
-            return "translate(" + 700 + ",-50)"
-        });
-}
-
 function drawParallelCoordinates(data, dimensions) {
     var colors = d3.scaleOrdinal(d3.schemeCategory10);
 
@@ -88,12 +53,6 @@ function drawParallelCoordinates(data, dimensions) {
         }
     });
 
-    extents = dimensions.map(function (p) {
-        return [0, 0];
-    });
-
-    //appendColorLegend(svg, "ParallelPlot");
-
     // Add grey background lines for context.
     background = svg.append("g")
         .attr("class", "background")
@@ -109,6 +68,9 @@ function drawParallelCoordinates(data, dimensions) {
         .data(data)
         .enter().append("path")
         .attr("d", path)
+        .attr("SampleId", function (d) {
+            return d["SampleId"];
+        })
         .style("stroke", function (d) {
             return colors(d["color"]);
         });
@@ -168,17 +130,9 @@ function drawParallelCoordinates(data, dimensions) {
             return d;
         });
 
-    // Add and store a brush for each axis.
-    g.append("g")
-        .attr("class", "brush")
-        .each(function (d) {
-            d3.select(this).call(y[d].brush = d3.brushY().extent([[-8, 0], [8, height]]).on("brush start", brushstart).on("brush", brush_parallel_chart));
-        })
-        .selectAll("rect")
-        .attr("x", -8)
-        .attr("width", 16);
+    return [g, y, foreground];
 
-    function position(d) {
+        function position(d) {
         var v = dragging[d];
         return v == null ? x(d) : v;
     }
@@ -192,29 +146,5 @@ function drawParallelCoordinates(data, dimensions) {
         return line(dimensions.map(function (p) {
             return [position(p), y[p](d[p])];
         }));
-    }
-
-    function brushstart() {
-        d3.event.sourceEvent.stopPropagation();
-    }
-
-
-// Handles a brush event, toggling the display of foreground lines.
-    function brush_parallel_chart() {
-        for (var i = 0; i < dimensions.length; ++i) {
-            if (d3.event.target == y[dimensions[i]].brush) {
-                extents[i] = d3.event.selection.map(y[dimensions[i]].invert, y[dimensions[i]]);
-            }
-        }
-
-        foreground.style("display", function (d) {
-            console.log(extents[i]);
-            return dimensions.every(function (p, i) {
-                if (extents[i][0] == 0 && extents[i][0] == 0) {
-                    return true;
-                }
-                return extents[i][1] <= d[p] && d[p] <= extents[i][0];
-            }) ? null : "none";
-        });
     }
 }

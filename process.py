@@ -106,6 +106,7 @@ def getParallelCoordsData():
             else:
                 parallel_coord[col] = row[col]
         parallel_coord["color"] = getBoroughId(row["Borough"])
+        parallel_coord["SampleId"] = index
         parallel_coords.append(parallel_coord)
     return parallel_coords
 
@@ -159,5 +160,5 @@ def getBoroughData():
 def getLocationData():
     location_data = []
     for index, row in new_df.iterrows():
-        location_data.append({"longitude": row["Longitude"], "latitude": row["Latitude"], "BoroughId": getBoroughId(row["Borough"])})
+        location_data.append({"longitude": row["Longitude"], "latitude": row["Latitude"], "BoroughId": getBoroughId(row["Borough"]), "SampleId": index})
     return location_data
