@@ -1,11 +1,13 @@
 function drawParallelCoordinates(data, dimensions) {
+    var height = parallelCoordsHeight;
     var colors = d3.scaleOrdinal(d3.schemeCategory10);
 
     var svg = d3
         .select("body")
         .append("svg")
-        .attr("width", parallelCoordsWidth + margin.left + margin.right)
+        .attr("width", parallelCoordsWidth)
         .attr("height", height + margin.top + margin.bottom)
+        .style("float", "right")
         .append("g")
         .attr("transform", "translate(" + 10 + "," + (margin.top + 30) + ")");
 

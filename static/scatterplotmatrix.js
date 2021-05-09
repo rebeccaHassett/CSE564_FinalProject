@@ -1,166 +1,152 @@
 function drawScatterplotMatrix(data) {
-    var svg = d3
-        .select("body")
+    var width = 800;
+    var height = 150;
+// append the svg object to the body of the page
+    var svg = d3.select("body")
         .append("svg")
-        .attr("width", 300 + margin.left + margin.right)
+        .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
+        .style("float", "right")
+        .style("position", "relative")
+        .style("bottom", "295px")
         .append("g")
-        .attr("transform", "translate(" + margin.left + "," + (margin.top + 30) + ")");
+        .attr("transform",
+            "translate(" + margin.left + "," + margin.top + ")");
 
-    var size = 230,
-    padding = 20;
-
+    // Add X axis
     var x = d3.scaleLinear()
-        .range([padding / 2, size - padding / 2]);
+        .domain([0, 100])
+        .range([0, width]);
+    svg.append("g")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(x));
 
+    // Add Y axis
     var y = d3.scaleLinear()
-        .range([size - padding / 2, padding / 2]);
+        .domain([920, 2150])
+        .range([height, 0]);
+    svg.append("g")
+        .call(d3.axisLeft(y));
 
-    var xAxis = d3.axisBottom()
-        .scale(x)
-        .ticks(6);
+    // Add a scale for bubble size
+    var z = d3.scaleLinear()
+        .domain([65, 7500])
+        .range([4, 40]);
 
-    var yAxis = d3.axisLeft()
-        .scale(y)
-        .ticks(6);
+    var myColor = d3.scaleOrdinal(d3.schemeCategory10);
 
-    var color = d3.scaleOrdinal(d3.schemeCategory10);
+    // -1- Create a tooltip div that is hidden by default:
+    /*var tooltip = d3.select("#my_dataviz")
+      .append("div")
+        .style("opacity", 0)
+        .attr("class", "tooltip")
+        .style("background-color", "black")
+        .style("border-radius", "5px")
+        .style("padding", "10px")
+        .style("color", "white")
 
-    var domainByTrait = {},
-        traits = d3.keys(data[0]).filter(function (d) {
-            return d !== "BoroughId";
-        }),
-        n = traits.length;
-
-    traits.forEach(function (trait) {
-        domainByTrait[trait] = d3.extent(data, function (d) {
-            return d[trait];
-        });
-    });
-
-    xAxis.tickSize(size * n);
-    yAxis.tickSize(-size * n);
-
-    var brush = d3.brush()
-        .on("start", brushstart)
-        .on("brush", brushmove)
-        .on("end", brushend)
-        .extent([[0, 0], [size, size]]);
-
-    var svg = d3.select("body").append("svg")
-        .attr("width", size * n + padding)
-        .attr("height", size * n + padding)
-        .append("g")
-        .attr("transform", "translate(" + padding + "," + padding / 2 + ")");
-
-    svg.selectAll(".x.axis")
-        .data(traits)
-        .enter().append("g")
-        .attr("class", "x axis")
-        .attr("transform", function (d, i) {
-            return "translate(" + (n - i - 1) * size + ",0)";
-        })
-        .each(function (d) {
-            x.domain(domainByTrait[d]);
-            d3.select(this).call(xAxis);
-        });
-
-    svg.selectAll(".y.axis")
-        .data(traits)
-        .enter().append("g")
-        .attr("class", "y axis")
-        .attr("transform", function (d, i) {
-            return "translate(0," + i * size + ")";
-        })
-        .each(function (d) {
-            y.domain(domainByTrait[d]);
-            d3.select(this).call(yAxis);
-        });
-
-    var cell = svg.selectAll(".cell")
-        .data(cross(traits, traits))
-        .enter().append("g")
-        .attr("class", "cell")
-        .attr("transform", function (d) {
-            return "translate(" + (n - d.i - 1) * size + "," + d.j * size + ")";
-        })
-        .each(plot);
-
-    // Titles for the diagonal.
-    cell.filter(function (d) {
-        return d.i === d.j;
-    }).append("text")
-        .attr("x", padding)
-        .attr("y", padding)
-        .attr("dy", ".71em")
-        .text(function (d) {
-            return d.x;
-        });
-
-    cell.call(brush);
-
-    function plot(p) {
-        var cell = d3.select(this);
-
-        x.domain(domainByTrait[p.x]);
-        y.domain(domainByTrait[p.y]);
-
-        cell.append("rect")
-            .attr("class", "frame")
-            .attr("x", padding / 2)
-            .attr("y", padding / 2)
-            .attr("width", size - padding)
-            .attr("height", size - padding);
-
-        cell.selectAll("circle")
-            .data(data)
-            .enter().append("circle")
-            .attr("cx", function (d) {
-                return x(d[p.x]);
-            })
-            .attr("cy", function (d) {
-                return y(d[p.y]);
-            })
-            .attr("r", 4)
-            .style("fill", function (d) {
-                return color(d.BoroughId);
-            });
+    // -2- Create 3 functions to show / update (when mouse move but stay on same circle) / hide the tooltip
+    var showTooltip = function(d) {
+      tooltip
+        .transition()
+        .duration(200)
+      tooltip
+        .style("opacity", 1)
+        .html("Country: " + d.country)
+        .style("left", (d3.mouse(this)[0]+30) + "px")
+        .style("top", (d3.mouse(this)[1]+30) + "px")
     }
+    var moveTooltip = function(d) {
+      tooltip
+        .style("left", (d3.mouse(this)[0]+30) + "px")
+        .style("top", (d3.mouse(this)[1]+30) + "px")
+    }
+    var hideTooltip = function(d) {
+      tooltip
+        .transition()
+        .duration(200)
+        .style("opacity", 0)
+    }*/
 
-    var brushCell;
+    // Add dots
+    var circles = svg.append('g')
+        .selectAll("dot")
+        .data(data)
+        .enter()
+        .append("circle")
+        .attr("class", "bubbles")
+        .attr("cx", function (d) {
+            return x(d["Percent Black"]);
+        })
+        .attr("cy", function (d) {
+            return y(d["Average SAT Score"]);
+        })
+        .attr("r", function (d) {
+            return z(d["Student Enrollment"]);
+        })
+        .style("fill", function (d) {
+            return myColor(d["BoroughId"]);
+        })
+    // -3- Trigger the functions
+    //.on("mouseover", showTooltip )
+    //.on("mousemove", moveTooltip )
+    //.on("mouseleave", hideTooltip )
 
-    // Clear the previously-active brush, if any.
-    function brushstart(p) {
-        if (brushCell !== this) {
-            d3.select(brushCell).call(brush.move, null);
-            brushCell = this;
-            x.domain(domainByTrait[p.x]);
-            y.domain(domainByTrait[p.y]);
+
+        //create brush
+    var mapBrush = d3.brush()
+        .on("brush", highlightBrushedCircles)
+        .on("end", mapBrushEnd);
+
+    svg.call(mapBrush);
+
+    function highlightBrushedCircles() {
+
+        if (d3.event.selection != null) {
+
+            // set circles to "non_brushed"
+            circles.attr("class", "non_brushed");
+
+            //coordinates describing the corners of the brush
+            var brush_coords = d3.brushSelection(this);
+
+            // set the circles within the brush to class "brushed" to style them accordingly
+            circles.filter(function () {
+
+                var cx = d3.select(this).attr("cx"),
+                    cy = d3.select(this).attr("cy"),
+                    SampleId = d3.select(this).attr("SampleId");
+
+                var isBrushedCircle = isBrushed(brush_coords, cx, cy);
+
+                return isBrushedCircle;
+            })
+                .attr("class", "brushed");
+
         }
     }
 
-    // Highlight the selected circles.
-    function brushmove(p) {
-        var e = d3.brushSelection(this);
-        svg.selectAll("circle").classed("hidden", function (d) {
-            return !e
-                ? false
-                : (
-                    e[0][0] > x(+d[p.x]) || x(+d[p.x]) > e[1][0]
-                    || e[0][1] > y(+d[p.y]) || y(+d[p.y]) > e[1][1]
-                );
-        });
+    function isBrushed(brush_coords, cx, cy) {
+
+        //the corners of the brush
+        var x0 = brush_coords[0][0],
+            x1 = brush_coords[1][0],
+            y0 = brush_coords[0][1],
+            y1 = brush_coords[1][1];
+
+        //checks whether the circle is within the brush
+        return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1;
     }
 
-    // If the brush is empty, select all circles.
-    function brushend() {
-        var e = d3.brushSelection(this);
-        if (e === null) svg.selectAll(".hidden").classed("hidden", false);
-    }
+    function mapBrushEnd() {
 
-    function cross(a, b) {
-        var c = [], n = a.length, m = b.length, i, j;
-        for (i = -1; ++i < n;) for (j = -1; ++j < m;) c.push({x: a[i], i: i, y: b[j], j: j});
-        return c;
+        if (!d3.event.selection) return;
+
+        // programmed clearing of brush after mouse-up
+        d3.select(this).call(mapBrush.move, null);
+
+        //set all circles to original color
+        svg.selectAll(".non_brushed").classed("brushed", true);
+
     }
 }

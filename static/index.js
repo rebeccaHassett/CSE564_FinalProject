@@ -1,11 +1,11 @@
 axios.get("http://127.0.0.1:5000/api").then(function ({data}) {
     // add function calls here and implement functions below this axios function.
+    var mapElements = drawMap(data.borough_data, data.location_data);
     var graphElements = drawParallelCoordinates(data.parallel_coords_data, data.column_names);
     drawScatterplotMatrix(data.scatterplotmatrix_data);
     drawBarChart(data.bar_plot_data);
     drawScreePlot(data);
     drawBiPlot(data);
-    var mapElements = drawMap(data.borough_data, data.location_data);
 
     var extents = data.column_names.map(function (p) {
         return [0, 0];
@@ -136,4 +136,7 @@ axios.get("http://127.0.0.1:5000/api").then(function ({data}) {
 var margin = {top: 50, right: 70, bottom: 70, left: 70},
     width = 500 - margin.left - margin.right,
     height = 300 - margin.top - margin.bottom,
-    parallelCoordsWidth = 960 - margin.left - margin.right;
+    parallelCoordsWidth = 940,
+    parallelCoordsHeight = 150,
+    mapCoordsWidth = 500 - margin.left - margin.right,
+    mapCoordsHeight = 500;

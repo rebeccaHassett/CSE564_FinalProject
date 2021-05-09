@@ -4,13 +4,13 @@ function drawMap(boroughs, locations) {
     var svg = d3
         .select("body")
         .append("svg")
-        .attr("width", parallelCoordsWidth + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
+        .attr("width", mapCoordsWidth + margin.left + margin.right)
+        .attr("height", mapCoordsHeight)
         .append("g")
-        .attr("transform", "translate(" + 10 + "," + (margin.top + 30) + ")");
+        .attr("transform", "translate(" + -200 + "," + (margin.top + -50) + ")");
 
     var projection = d3.geoMercator() // mercator makes it easy to center on specific lat/long
-        .scale(50000)
+        .scale(35000)
         .center([-73.94, 40.70]); // long, lat of NYC
 
     var pathGenerator = d3.geoPath()
@@ -108,14 +108,14 @@ function drawMap(boroughs, locations) {
 
         // draw legend colored rectangles
         legends.append("rect")
-            .attr("x", legendWidth - 18)
+            .attr("x", legendWidth + 50)
             .attr("width", 18)
             .attr("height", 18)
             .style("fill", colorScale);
 
         // draw legend text
         legends.append("text")
-            .attr("x", legendWidth - 24)
+            .attr("x", legendWidth + 25)
             .attr("y", 9)
             .attr("dy", ".35em")
             .style("text-anchor", "end")
