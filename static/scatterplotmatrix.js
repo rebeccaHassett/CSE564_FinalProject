@@ -1,5 +1,4 @@
 function drawScatterplotMatrix(data) {
-    console.log(data);
     var svg = d3
         .select("body")
         .append("svg")

@@ -1,5 +1,4 @@
 function drawMap(boroughs, locations) {
-    console.log(locations)
     var width = 900;
     var height = 600;
     var svg = d3

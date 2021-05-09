@@ -67,6 +67,9 @@ axios.get("http://127.0.0.1:5000/api").then(function ({data}) {
 
             // set circles to "non_brushed"
             mapElements[1].attr("class", "non_brushed");
+            graphElements[2].style("display", function (d) {
+                return "none";
+            });
 
             //coordinates describing the corners of the brush
             var brush_coords = d3.brushSelection(this);
@@ -78,9 +81,14 @@ axios.get("http://127.0.0.1:5000/api").then(function ({data}) {
                     cy = d3.select(this).attr("cy"),
                     SampleId = d3.select(this).attr("SampleId");
 
-                console.log(SampleId);
+                var isBrushedCircle = isBrushed(brush_coords, cx, cy);
 
-                return isBrushed(brush_coords, cx, cy);
+                if(isBrushedCircle)
+                {
+                    parallelCoordsBrushSample(SampleId);
+                }
+
+                return isBrushedCircle;
             })
                 .attr("class", "brushed");
 
@@ -107,7 +115,7 @@ axios.get("http://127.0.0.1:5000/api").then(function ({data}) {
         d3.select(this).call(mapBrush.move, null);
 
         //set all circles to original color
-        svg.selectAll(".non_brushed").classed("brushed", true);
+        mapElements[0].selectAll(".non_brushed").classed("brushed", true);
 
     }
 
@@ -116,6 +124,13 @@ axios.get("http://127.0.0.1:5000/api").then(function ({data}) {
         mapElements[1].filter(function (elem) {
             return elem.SampleId === SampleId;
         }).attr("class", "brushed");
+    }
+
+    function parallelCoordsBrushSample(SampleId)
+    {
+        graphElements[2].filter(function(elem) {
+            return elem["SampleId"] == SampleId;
+        }).style("display", null);
     }
 });
 var margin = {top: 50, right: 70, bottom: 70, left: 70},
