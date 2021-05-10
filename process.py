@@ -59,22 +59,23 @@ def getBarPlotData():
                     "SAT Math":round(manhattan_sat['Average Score (SAT Math)'].mean()),
                     "SAT Reading":round(manhattan_sat['Average Score (SAT Reading)'].mean()),
                     "SAT Writing":round(manhattan_sat['Average Score (SAT Writing)'].mean())})
-    barplot_data.append({"borough":"queens",
-                    "SAT Math":round(queens_sat['Average Score (SAT Math)'].mean()),
-                    "SAT Reading":round(queens_sat['Average Score (SAT Reading)'].mean()),
-                    "SAT Writing":round(queens_sat['Average Score (SAT Writing)'].mean())})
-    barplot_data.append({"borough":"bronx",
-                    "SAT Math":round(bronx_sat['Average Score (SAT Math)'].mean()),
-                    "SAT Reading":round(bronx_sat['Average Score (SAT Reading)'].mean()),
-                    "SAT Writing":round(bronx_sat['Average Score (SAT Writing)'].mean())})
-    barplot_data.append({"borough":"brooklyn",
-                    "SAT Math":round(brooklyn_sat['Average Score (SAT Math)'].mean()),
-                    "SAT Reading":round(brooklyn_sat['Average Score (SAT Reading)'].mean()),
-                    "SAT Writing":round(brooklyn_sat['Average Score (SAT Writing)'].mean())})
     barplot_data.append({"borough":"staten_island",
                     "SAT Math":round(staten_island_sat['Average Score (SAT Math)'].mean()),
                     "SAT Reading":round(staten_island_sat['Average Score (SAT Reading)'].mean()),
                     "SAT Writing":round(staten_island_sat['Average Score (SAT Writing)'].mean())})
+    barplot_data.append({"borough":"bronx",
+                        "SAT Math":round(bronx_sat['Average Score (SAT Math)'].mean()),
+                        "SAT Reading":round(bronx_sat['Average Score (SAT Reading)'].mean()),
+                        "SAT Writing":round(bronx_sat['Average Score (SAT Writing)'].mean())})
+    barplot_data.append({"borough":"queens",
+                    "SAT Math":round(queens_sat['Average Score (SAT Math)'].mean()),
+                    "SAT Reading":round(queens_sat['Average Score (SAT Reading)'].mean()),
+                    "SAT Writing":round(queens_sat['Average Score (SAT Writing)'].mean())})
+    barplot_data.append({"borough":"brooklyn",
+                    "SAT Math":round(brooklyn_sat['Average Score (SAT Math)'].mean()),
+                    "SAT Reading":round(brooklyn_sat['Average Score (SAT Reading)'].mean()),
+                    "SAT Writing":round(brooklyn_sat['Average Score (SAT Writing)'].mean())})
+    
     barplot_df = pd.DataFrame(barplot_data, columns = ["borough","SAT Math","SAT Reading","SAT Writing"])
     return barplot_data;
 

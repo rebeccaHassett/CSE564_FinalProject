@@ -1,8 +1,7 @@
 function drawBarChart(data) {
   var width = 300;
-
   data["columns"] = ["borough", "SAT Math", "SAT Reading", "SAT Writing"];
-
+  var myColor = d3.scaleOrdinal(d3.schemeCategory10);
   var svg = d3
     .select("body")
     .append("svg")
@@ -10,6 +9,7 @@ function drawBarChart(data) {
     .style("bottom", "50px")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
+    // .attr("class","barchart")
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
@@ -29,7 +29,7 @@ function drawBarChart(data) {
     .call(d3.axisBottom(x).tickSize(0));
 
   svg.append("text")
-  .attr("x", width/2)
+  .attr("x", width/2 - 30)
   .attr("y", height + 40)
   .text("Borough");
   // Add Y axis
@@ -38,7 +38,7 @@ function drawBarChart(data) {
 
   svg.append("text")
   .attr("transform", "rotate(-90)")
-  .attr("x", -(height / 2))
+  .attr("x", -(height / 2) - 50)
   .attr("y", - 40)
   .text("Average SAT Scores");
 
@@ -50,10 +50,10 @@ function drawBarChart(data) {
     .padding([0.05]);
 
   // color palette = one color per subgroup
-  var color = d3
-    .scaleOrdinal()
-    .domain(subgroups)
-    .range(["#e41a1c", "#377eb8", "#4daf4a"]);
+  // var color = d3
+  //   .scaleOrdinal()
+  //   .domain(subgroups)
+  //   .range(["#e41a1c", "#377eb8", "#4daf4a"]);
 
   // title
   svg
@@ -75,6 +75,15 @@ function drawBarChart(data) {
     .attr("transform", function (d) {
       return "translate(" + x(d.borough) + ",0)";
     })
+    .style("fill", function (d) {
+      return myColor(d["borough"]);
+    })
+    // .on("mouseover",function(d, i){
+    //   handleMouseOver(d,i)
+    // })
+    // .on("mouseout",function(d, i){
+    //   handleMouseOut(d,i)
+    // })
     .selectAll("rect")
     .data(function (d) {
       return subgroups.map(function (key) {
@@ -93,7 +102,53 @@ function drawBarChart(data) {
     .attr("height", function (d) {
       return height - y(d.value);
     })
-    .attr("fill", function (d) {
-      return color(d.key);
-    });
+    .on("mouseover", mouseover)
+    .on("mousemove", mousemove)
+    .on("mouseleave", mouseleave)
+    // can add subgroup stuff here
 }
+  // create a tooltip
+  var Tooltip = d3.select("body")
+    .append("div")
+    .style("opacity", 0)
+    .attr("class", "tooltip")
+    .style("background-color", "white")
+    .style("border", "solid")
+    .style("border-width", "2px")
+    .style("border-radius", "5px")
+    .style("padding", "5px")
+
+  // Three function that change the tooltip when user hover / move / leave a cell
+  var mouseover = function(d) {
+    Tooltip
+      .style("opacity", 1)
+    d3.select(this)
+      .style("stroke", "black")
+      .style("opacity", 1)
+    
+  }
+  var mousemove = function(d) {
+    Tooltip
+      .html( d.key + " Score : " + d.value)
+      .style("left", (d3.mouse(this)[0]+100) + "px")
+      .style("top", (d3.mouse(this)[1]+400) + "px")
+  }
+  var mouseleave = function(d) {
+    Tooltip
+      .style("opacity", 0)
+    d3.select(this)
+      .style("stroke", "none")
+      .style("opacity", 0.8)
+  }
+
+// function handleMouseOver(d,i){
+//   console.log(d);
+//   console.log(i)
+//   //mapBrushSample(i);
+//   // console.log()
+// }
+
+// function handleMouseOut(d,i){
+//   console.log(d);
+//   console.log(i)
+// }

@@ -71,6 +71,16 @@ function drawBiPlot(data) {
       .attr("cy", (d) => y(d.y))
       .attr("r", 1)
       .style("fill", "#3498db");
+
+
+
+
+
+
+
+
+
+      
     //add lines
     biPlot_line = [];
     for (var i = 0; i < pc1.length; i++) {
