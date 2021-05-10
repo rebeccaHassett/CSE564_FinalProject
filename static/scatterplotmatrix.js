@@ -84,69 +84,16 @@ function drawScatterplotMatrix(data) {
         .attr("r", function (d) {
             return z(d["Student Enrollment"]);
         })
+        .attr("SampleId", function (d) {
+            return d["SampleId"];
+        })
         .style("fill", function (d) {
             return myColor(d["BoroughId"]);
-        })
+        });
     // -3- Trigger the functions
     //.on("mouseover", showTooltip )
     //.on("mousemove", moveTooltip )
     //.on("mouseleave", hideTooltip )
 
-
-        //create brush
-    var mapBrush = d3.brush()
-        .on("brush", highlightBrushedCircles)
-        .on("end", mapBrushEnd);
-
-    svg.call(mapBrush);
-
-    function highlightBrushedCircles() {
-
-        if (d3.event.selection != null) {
-
-            // set circles to "non_brushed"
-            circles.attr("class", "non_brushed");
-
-            //coordinates describing the corners of the brush
-            var brush_coords = d3.brushSelection(this);
-
-            // set the circles within the brush to class "brushed" to style them accordingly
-            circles.filter(function () {
-
-                var cx = d3.select(this).attr("cx"),
-                    cy = d3.select(this).attr("cy"),
-                    SampleId = d3.select(this).attr("SampleId");
-
-                var isBrushedCircle = isBrushed(brush_coords, cx, cy);
-
-                return isBrushedCircle;
-            })
-                .attr("class", "brushed");
-
-        }
-    }
-
-    function isBrushed(brush_coords, cx, cy) {
-
-        //the corners of the brush
-        var x0 = brush_coords[0][0],
-            x1 = brush_coords[1][0],
-            y0 = brush_coords[0][1],
-            y1 = brush_coords[1][1];
-
-        //checks whether the circle is within the brush
-        return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1;
-    }
-
-    function mapBrushEnd() {
-
-        if (!d3.event.selection) return;
-
-        // programmed clearing of brush after mouse-up
-        d3.select(this).call(mapBrush.move, null);
-
-        //set all circles to original color
-        svg.selectAll(".non_brushed").classed("brushed", true);
-
-    }
+    return [svg, circles];
 }
