@@ -200,10 +200,10 @@ axios.get("http://127.0.0.1:5000/api").then(function ({data}) {
         }).style("display", null);
     }
 });
-var margin = {top: 50, right: 70, bottom: 70, left: 70},
+var margin = {top: 50, right: 70, bottom: 50, left: 70},
     width = 500 - margin.left - margin.right,
-    height = 300 - margin.top - margin.bottom,
+    height = 250 - margin.top - margin.bottom,
     parallelCoordsWidth = 940,
-    parallelCoordsHeight = 150,
+    parallelCoordsHeight = 120,
     mapCoordsWidth = 500 - margin.left - margin.right,
-    mapCoordsHeight = 500;
+    mapCoordsHeight = 450;
