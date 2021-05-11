@@ -1,12 +1,10 @@
 function drawBiPlot(data) {
     const { eigenvector, pca_data,attribute } = data;
-    var svg = d3.select("body")
+
+    var svg = d3.select("#biplot")
       .append("svg")
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
-                    .style("position", "relative")
-            .style("bottom", "350px")
-        .style("float", "right")
       .append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
     var pc1 = eigenvector[0];
@@ -71,14 +69,6 @@ function drawBiPlot(data) {
       .attr("cy", (d) => y(d.y))
       .attr("r", 1)
       .style("fill", "#3498db");
-
-
-
-
-
-
-
-
 
       
     //add lines

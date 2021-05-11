@@ -1,6 +1,6 @@
 function drawScreePlot(data) {
      var svg = d3
-        .select("body")
+        .select("#screeplot")
         .append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height)

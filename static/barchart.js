@@ -3,13 +3,10 @@ function drawBarChart(data) {
   data["columns"] = ["borough", "SAT Math", "SAT Reading", "SAT Writing", "BoroughId"];
   var myColor = d3.scaleOrdinal(d3.schemeCategory10);
   var svg = d3
-    .select("body")
+    .select("#barchart")
     .append("svg")
-                  .style("position", "relative")
-    .style("bottom", "50px")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
-    // .attr("class","barchart")
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 

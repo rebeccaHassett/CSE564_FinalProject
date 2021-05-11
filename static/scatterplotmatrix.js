@@ -1,13 +1,11 @@
 function drawScatterplotMatrix(data) {
     var width = 800;
-    var height = 150;
-    var svg = d3.select("body")
+    var height = 120;
+// append the svg object to the body of the page
+    var svg = d3.select("#bubble")
         .append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
-        .style("float", "right")
-        .style("position", "relative")
-        .style("bottom", "295px")
         .append("g")
         .attr("transform",
             "translate(" + margin.left + "," + margin.top + ")");
@@ -38,12 +36,37 @@ function drawScatterplotMatrix(data) {
         .attr("transform", "translate(0," + height + ")")
         .call(d3.axisBottom(x));
 
+    // Add X label
+    svg
+    .append("text")
+    .attr("x", width / 2 - 50)
+    .attr("y", height + 40)
+    .text("Percent Black");
+
+    //Add Title
+    svg
+    .append("text")
+    .attr("x", width / 2)
+    .attr("y", -30)
+    .text("Bubble Plot")
+    .style("font-weight", "bold")
+    .attr("fill", "black")
+    .style("font-size", "20px");
+
     // Add Y axis
     var y = d3.scaleLinear()
         .domain([920, 2150])
         .range([height, 0]);
     svg.append("g")
         .call(d3.axisLeft(y));
+
+    // Add Y label 
+    svg
+    .append("text")
+    .attr("transform", "rotate(-90)")
+    .attr("x", -(height / 2) - 60)
+    .attr("y", -50)
+    .text("Average SAT Score");
 
     // Add a scale for bubble size
     var z = d3.scaleLinear()

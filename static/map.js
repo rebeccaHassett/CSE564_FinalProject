@@ -1,4 +1,6 @@
 function drawMap(boroughs, locations, svg) {
+    /*    var width = 900;
+    var height = 600;*/
     var projection = d3.geoMercator() // mercator makes it easy to center on specific lat/long
         .scale(35000)
         .center([-73.6, 40.70]); // long, lat of NYC //[-73.94, 40.70]
@@ -102,7 +104,8 @@ function drawMap(boroughs, locations, svg) {
             .attr("y", 9)
             .attr("dy", ".35em")
             .style("text-anchor", "end")
-            .style("fill","black")
+            //.style("fill","black")
+            .style("fill","white")
             .text(function (d) {
                 if(d === 1)
                 {
