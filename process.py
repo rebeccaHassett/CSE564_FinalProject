@@ -12,7 +12,6 @@ df = pd.read_csv("data/scores.csv")
 # DROP 10 Attributes
 new_df = df.copy()
 new_df.drop('School ID', axis=1, inplace=True)
-new_df.drop('School Name', axis=1, inplace=True)
 new_df.drop('Building Code', axis=1, inplace=True)
 new_df.drop('Street Address', axis=1, inplace=True)
 new_df.drop('City', axis=1, inplace=True)
@@ -55,23 +54,23 @@ def getBarPlotData():
     staten_island_sat = new_df[new_df["Borough"] == "Staten Island"]
 
     barplot_data = []
-    barplot_data.append({"borough":"manhattan",
+    barplot_data.append({"borough":"manhattan", "BoroughId": 1,
                     "SAT Math":round(manhattan_sat['Average Score (SAT Math)'].mean()),
                     "SAT Reading":round(manhattan_sat['Average Score (SAT Reading)'].mean()),
                     "SAT Writing":round(manhattan_sat['Average Score (SAT Writing)'].mean())})
-    barplot_data.append({"borough":"staten_island",
+    barplot_data.append({"borough":"staten_island", "BoroughId": 5,
                     "SAT Math":round(staten_island_sat['Average Score (SAT Math)'].mean()),
                     "SAT Reading":round(staten_island_sat['Average Score (SAT Reading)'].mean()),
                     "SAT Writing":round(staten_island_sat['Average Score (SAT Writing)'].mean())})
-    barplot_data.append({"borough":"bronx",
+    barplot_data.append({"borough":"bronx", "BoroughId": 3,
                         "SAT Math":round(bronx_sat['Average Score (SAT Math)'].mean()),
                         "SAT Reading":round(bronx_sat['Average Score (SAT Reading)'].mean()),
                         "SAT Writing":round(bronx_sat['Average Score (SAT Writing)'].mean())})
-    barplot_data.append({"borough":"queens",
+    barplot_data.append({"borough":"queens", "BoroughId": 4,
                     "SAT Math":round(queens_sat['Average Score (SAT Math)'].mean()),
                     "SAT Reading":round(queens_sat['Average Score (SAT Reading)'].mean()),
                     "SAT Writing":round(queens_sat['Average Score (SAT Writing)'].mean())})
-    barplot_data.append({"borough":"brooklyn",
+    barplot_data.append({"borough":"brooklyn", "BoroughId": 2,
                     "SAT Math":round(brooklyn_sat['Average Score (SAT Math)'].mean()),
                     "SAT Reading":round(brooklyn_sat['Average Score (SAT Reading)'].mean()),
                     "SAT Writing":round(brooklyn_sat['Average Score (SAT Writing)'].mean())})
@@ -81,7 +80,7 @@ def getBarPlotData():
 
 # def getHistogramData():
 def getPCAData():
-    numerical_df = new_df.drop(columns=['Borough', 'Start Time',"End Time", "Longitude", "Latitude"]) # drop categorical data, only numerical data for PCA
+    numerical_df = new_df.drop(columns=['Borough', 'Start Time',"End Time", "Longitude", "Latitude","School Name"]) # drop categorical data, only numerical data for PCA
     df_standard =  StandardScaler().fit_transform(numerical_df) 
     pca = PCA() 
     new_pc = pca.fit_transform(df_standard)  
@@ -94,7 +93,7 @@ def getPCAData():
     return exp_var,cum_exp_var,attribute,eigenvector,pca_data
 
 def getParallelCoordsData():
-    parall_coords_df = new_df.drop(columns=['Latitude', 'Longitude'])
+    parall_coords_df = new_df.drop(columns=['Latitude', 'Longitude', 'School Name'])
 
     cols = parall_coords_df.columns.values
 
@@ -128,7 +127,7 @@ def roundTimeHelper(dt=None, roundTo=60):
    return dt + timedelta(0,rounding-seconds,-dt.microsecond)
 
 def getColumnNames():
-    columns_df = new_df.drop(columns=['Latitude', 'Longitude'])
+    columns_df = new_df.drop(columns=['Latitude', 'Longitude', 'School Name'])
     return columns_df.columns.values.tolist()
 
 def getBoroughId(borough):
@@ -146,9 +145,10 @@ def getBoroughId(borough):
 def getScatterplotMatrixData():
     scatterplotmatrix_data = []
     for index, row in new_df.iterrows():
-        scatterplotmatrix_row = {"Percent Black": row["Percent Black"], "Student Enrollment": row["Student Enrollment"],
+        scatterplotmatrix_row = {"Percent Black": row["Percent Black"], "Percent White": row["Percent White"], "Percent Hispanic": row["Percent Hispanic"],
+                                 "Percent Asian": row["Percent Asian"], "Student Enrollment": row["Student Enrollment"],
                                  "Percent Tested": row["Percent Tested"], "Average SAT Score": row["Average Score (SAT Math)"] + row["Average Score (SAT Reading)"] + row["Average Score (SAT Writing)"],
-                                 "BoroughId": getBoroughId(row["Borough"]), "SampleId": index}
+                                 "BoroughId": getBoroughId(row["Borough"]), "Average SAT Score Math": row["Average Score (SAT Math)"], "SampleId": index}
         scatterplotmatrix_data.append(scatterplotmatrix_row)
     return scatterplotmatrix_data
 
@@ -161,5 +161,14 @@ def getBoroughData():
 def getLocationData():
     location_data = []
     for index, row in new_df.iterrows():
-        location_data.append({"longitude": row["Longitude"], "latitude": row["Latitude"], "BoroughId": getBoroughId(row["Borough"]), "SampleId": index})
+        location_data.append({"longitude": row["Longitude"], "latitude": row["Latitude"], "BoroughId": getBoroughId(row["Borough"]), "SampleId": index, "SchoolName": row["School Name"]})
     return location_data
+
+def getHistogramData():
+    histo_data = {}
+    percent_tested = []
+    for index, row in new_df.iterrows():
+        percent_tested.append(row["Percent Tested"])
+    histo_data["data"] = percent_tested
+    print(percent_tested)
+    return histo_data

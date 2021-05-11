@@ -1,12 +1,23 @@
 axios.get("http://127.0.0.1:5000/api").then(function ({data}) {
     // add function calls here and implement functions below this axios function.
-    console.log(data);
-    var mapElements = drawMap(data.borough_data, data.location_data);
-    console.log(mapElements);
+        var mapSVG = d3
+        .select("body")
+        .append("svg")
+        .attr("width", mapCoordsWidth + margin.left + margin.right)
+        .attr("height", mapCoordsHeight)
+        .append("g")
+        .attr("transform", "translate(" + 0 + "," + (margin.top + -50) + ")");
+            //create brush
+    var mapBrush = d3.brush()
+        .on("brush", highlightBrushedCircles)
+        .on("end", mapBrushEnd);
+
+    mapSVG.call(mapBrush);
+    var mapElements = drawMap(data.borough_data, data.location_data, mapSVG);
     var graphElements = drawParallelCoordinates(data.parallel_coords_data, data.column_names);
     var bubbleElements = drawScatterplotMatrix(data.scatterplotmatrix_data);
     drawBarChart(data.bar_plot_data);
-    drawScreePlot(data);
+    drawScreePlot(data.scatterplotmatrix_data);
     drawBiPlot(data);
 
     var extents = data.column_names.map(function (p) {
@@ -23,13 +34,6 @@ axios.get("http://127.0.0.1:5000/api").then(function ({data}) {
         .attr("x", -8)
         .attr("width", 16);
 
-    //create brush
-    var mapBrush = d3.brush()
-        .on("brush", highlightBrushedCircles)
-        .on("end", mapBrushEnd);
-
-    mapElements[0].call(mapBrush);
-
 
     function brushstart() {
         d3.event.sourceEvent.stopPropagation();
@@ -45,7 +49,7 @@ axios.get("http://127.0.0.1:5000/api").then(function ({data}) {
         }
 
         mapElements[1].attr("class", "non_brushed");
-        bubbleElements[1].attr("class", "non_brushed");
+        globalCircles.attr("class", "non_brushed");
 
         graphElements[2].style("display", function (d) {
             var isBrushedLine = data.column_names.every(function (p, i) {
@@ -71,7 +75,7 @@ axios.get("http://127.0.0.1:5000/api").then(function ({data}) {
 
             // set circles to "non_brushed"
             mapElements[1].attr("class", "non_brushed");
-            bubbleElements[1].attr("class", "non_brushed");
+            globalCircles.attr("class", "non_brushed");
             graphElements[2].style("display", function (d) {
                 return "none";
             });
@@ -125,8 +129,7 @@ axios.get("http://127.0.0.1:5000/api").then(function ({data}) {
 
     }
 
-            //create brush
-    var bubbleBrush = d3.brush()
+            var bubbleBrush = d3.brush()
         .on("brush", highlightBrushedBubbles)
         .on("end", bubbleBrushEnd);
 
@@ -137,7 +140,7 @@ axios.get("http://127.0.0.1:5000/api").then(function ({data}) {
         if (d3.event.selection != null) {
 
             // set circles to "non_brushed"
-            bubbleElements[1].attr("class", "non_brushed");
+            globalCircles.attr("class", "non_brushed");
             mapElements[1].attr("class", "non_brushed");
             graphElements[2].style("display", function (d) {
                 return "none";
@@ -147,7 +150,7 @@ axios.get("http://127.0.0.1:5000/api").then(function ({data}) {
             var brush_coords = d3.brushSelection(this);
 
             // set the circles within the brush to class "brushed" to style them accordingly
-            bubbleElements[1].filter(function () {
+            globalCircles.filter(function () {
 
                 var cx = d3.select(this).attr("cx"),
                     cy = d3.select(this).attr("cy"),
@@ -188,7 +191,7 @@ axios.get("http://127.0.0.1:5000/api").then(function ({data}) {
     }
 
     function bubbleBrushSample(SampleId) {
-        bubbleElements[1].filter(function (elem) {
+        globalCircles.filter(function (elem) {
             return elem.SampleId == SampleId;
         }).attr("class", "brushed");
     }
@@ -207,3 +210,5 @@ var margin = {top: 50, right: 70, bottom: 70, left: 70},
     parallelCoordsHeight = 150,
     mapCoordsWidth = 500 - margin.left - margin.right,
     mapCoordsHeight = 500;
+
+var globalCircles;

@@ -1,6 +1,6 @@
 function drawBarChart(data) {
   var width = 300;
-  data["columns"] = ["borough", "SAT Math", "SAT Reading", "SAT Writing"];
+  data["columns"] = ["borough", "SAT Math", "SAT Reading", "SAT Writing", "BoroughId"];
   var myColor = d3.scaleOrdinal(d3.schemeCategory10);
   var svg = d3
     .select("body")
@@ -49,12 +49,6 @@ function drawBarChart(data) {
     .range([0, x.bandwidth()])
     .padding([0.05]);
 
-  // color palette = one color per subgroup
-  // var color = d3
-  //   .scaleOrdinal()
-  //   .domain(subgroups)
-  //   .range(["#e41a1c", "#377eb8", "#4daf4a"]);
-
   // title
   svg
   .append("text")
@@ -78,16 +72,10 @@ function drawBarChart(data) {
     .style("fill", function (d) {
       return myColor(d["borough"]);
     })
-    // .on("mouseover",function(d, i){
-    //   handleMouseOver(d,i)
-    // })
-    // .on("mouseout",function(d, i){
-    //   handleMouseOut(d,i)
-    // })
     .selectAll("rect")
     .data(function (d) {
       return subgroups.map(function (key) {
-        return { key: key, value: d[key] };
+        return { key: key, value: d[key], BoroughId: d["BoroughId"] };
       });
     })
     .enter()
@@ -120,6 +108,7 @@ function drawBarChart(data) {
 
   // Three function that change the tooltip when user hover / move / leave a cell
   var mouseover = function(d) {
+  console.log(d);
     Tooltip
       .style("opacity", 1)
     d3.select(this)
@@ -140,15 +129,3 @@ function drawBarChart(data) {
       .style("stroke", "none")
       .style("opacity", 0.8)
   }
-
-// function handleMouseOver(d,i){
-//   console.log(d);
-//   console.log(i)
-//   //mapBrushSample(i);
-//   // console.log()
-// }
-
-// function handleMouseOut(d,i){
-//   console.log(d);
-//   console.log(i)
-// }

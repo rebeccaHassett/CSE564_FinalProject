@@ -1,100 +1,160 @@
 function drawScreePlot(data) {
-    const { exp_var, cum_exp_var, attribute, eigenvector } = data;
-    var svg = d3.select("body")
-      .append("svg")
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
-            .style("position", "relative")
-    .style("bottom", "350px")
-        .style("left", "500px")
-      .append("g")
-      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-  
-    a = [];
-    for (var i = 0; i < exp_var.length; i++) {
-      a.push({
-        key: i + 1,
-        value: exp_var[i],
-        attribute: attribute,
-        eigenvector: eigenvector,
-      });
-    }
-    domain_x = a.map((a) => a.key);
-  
-    var x = d3.scaleBand().range([0, width]).padding(0.2).domain(domain_x);
-  
-    var y = d3.scaleLinear().range([height, 0]).domain([0, 1]);
-  
-    svg
-      .append("g")
-      .attr("transform", "translate(0," + height + ")")
-      .call(d3.axisBottom(x));
-    //add x-label
-    svg
-      .append("text")
-      .attr("x", width / 2)
-      .attr("y", height + 40)
-      .text("Components");
-  
-    svg
-      .append("text")
-      .attr("x", width / 2)
-      .attr("y", -30)
-      .text("ScreePlot")
-      .style("font-weight", "bold")
-      .attr("fill", "black")
-      .style("font-size", "20px");
-  
-    // add y-axis
-    svg.append("g").call(d3.axisLeft(y));
-  
-    // add y-lable
-    svg
-      .append("text")
-      .attr("transform", "rotate(-90)")
-      .attr("x", -(height / 2) - 50)
-      .attr("y", -40)
-      .text("Explained Variance Ratio");
-  
-    //add bars
-    svg
-      .selectAll("rect")
-      .data(a)
-      .enter()
-      .append("rect")
-      .attr("x", (d) => x(d.key))
-      .attr("width", x.bandwidth())
-      .attr("y", (d) => y(d.value))
-      .attr("height", (d) => height - y(d.value))
-      .style("fill", "#3498db")
-      .on("click", function (d) {
-        drawTable(d, data);
-      });
-    //  add text
-    svg
-      .selectAll("text.bar")
-      .data(a)
-      .enter()
-      .append("text")
-      .attr("class", "bar")
-      .attr("transform", function (d) {
-        return "translate(" + x(d.key) + "," + y(d.value) + ")";
-      });
-    cum_a = [];
-    for (var i = 0; i < exp_var.length; i++) {
-      cum_a.push({ key: i + 1, value: cum_exp_var[i] });
-    }
-    svg
-      .append("path")
-      .datum(cum_a)
+     var svg = d3
+        .select("body")
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height)
+        .append("g")
+        .attr("transform", "translate(" + 0 + "," + (margin.top + 0) + ")");
+
+     var allGroup = d3.map(data, function(d){return(d.BoroughId)}).keys();
+
+     function getBoroughFromId(id)
+     {
+         if(id == 1)
+         {
+             return "Manhattan";
+         }
+         else if(id == 2) {
+             return "Brooklyn";
+         }
+         else if(id == 3)
+         {
+             return "Bronx";
+         }
+         else if(id == 4)
+         {
+             return "Queens";
+         }
+         else {
+             return "Staten Island";
+         }
+     }
+
+       // add the options to the button
+  d3.select("#selectButton")
+    .selectAll('myOptions')
+    .data(allGroup)
+    .enter()
+    .append('option')
+    .text(function (d) { return getBoroughFromId(d); }) // text showed in the menu
+    .attr("value", function (d) { return d; }); // corresponding value returned by the button
+
+  // A function that update the chart when slider is moved?
+  function updateChart(selectedGroup) {
+    // recompute density estimation
+    kde = kernelDensityEstimator(kernelEpanechnikov(3), x.ticks(40))
+    var density =  kde( data
+      .filter(function(d){ return d.BoroughId == selectedGroup})
+      .map(function(d){  return +d["Percent Tested"]; })
+    );
+
+    var n = data.length,
+      bins = d3.histogram().domain(x.domain()).thresholds(40)(data
+      .filter(function(d){ return d.BoroughId == selectedGroup;})
+      .map(function(d){  return +d["Percent Tested"]; }));
+
+    d3.selectAll(".paths").remove();
+    d3.selectAll(".bars").remove();
+
+      svg.insert("g", "*")
+      .attr("fill", "#bbb")
+    .selectAll("rect")
+    .data(bins)
+    .enter().append("rect")
+          .attr("class", "bars")
+      .attr("fill", "#69b3a2")
+      .attr("x", function(d) { return x(d.x0) + 1; })
+      .attr("y", function(d) { return y(d.length / n); })
+      .attr("width", function(d) { return x(d.x1) - x(d.x0) - 1; })
+      .attr("height", function(d) { return y(0) - y(d.length / n); });
+
+  svg.append("path")
+      .attr("class", "paths")
+      .datum(density)
       .attr("fill", "none")
-      .attr("stroke", "steelblue")
+      .attr("stroke", "#000")
       .attr("stroke-width", 1.5)
-      .attr(
-        "d",
-        d3
-          .line()
-          .x((d) => x(d.key)+15)
-          .y((d) => y(d.value))
-      );
+      .attr("stroke-linejoin", "round")
+      .attr("d",  d3.line()
+          .curve(d3.curveBasis)
+          .x(function(d) { return x(d[0]); })
+          .y(function(d) { return y(d[1]); }));
+  }
+
+  d3.select("#selectButton").on("change", function(d){
+    selectedGroup = this.value;
+    updateChart(selectedGroup)
+  });
+
+    var x = d3.scaleLinear()
+    .domain([0, 800])
+    .range([margin.left, width - margin.right]);
+
+var y = d3.scaleLinear()
+    .domain([0, 0.1])
+    .range([height - margin.bottom, margin.top]);
+
+svg.append("g")
+    .attr("class", "axis axis--x")
+    .attr("transform", "translate(0," + (height - margin.bottom) + ")")
+    .call(d3.axisBottom(x))
+  .append("text")
+    .attr("x", width - margin.right)
+    .attr("y", -6)
+    .attr("fill", "#000")
+    .attr("text-anchor", "end")
+    .attr("font-weight", "bold")
+    .text("Time between eruptions (min.)");
+
+svg.append("g")
+    .attr("class", "axis axis--y")
+    .attr("transform", "translate(" + margin.left + ",0)")
+    .call(d3.axisLeft(y).ticks(null, "%"));
+
+  var n = data.length,
+      bins = d3.histogram().domain(x.domain()).thresholds(40)(data
+      .filter(function(d){ return d.BoroughId == 4;})
+      .map(function(d){  return +d["Percent Tested"]; })),
+      density = kernelDensityEstimator(kernelEpanechnikov(7), x.ticks(40))(data
+      .filter(function(d){ return d.BoroughId == 4;})
+      .map(function(d){  return +d["Percent Tested"]; }));
+
+  svg.insert("g", "*")
+      .attr("fill", "#bbb")
+    .selectAll("rect")
+    .data(bins)
+    .enter().append("rect")
+      .attr("class", "bars")
+      .attr("fill", "#69b3a2")
+      .attr("x", function(d) { return x(d.x0) + 1; })
+      .attr("y", function(d) { return y(d.length / n); })
+      .attr("width", function(d) { return x(d.x1) - x(d.x0) - 1; })
+      .attr("height", function(d) { return y(0) - y(d.length / n); });
+
+  svg.append("path")
+      .attr("class", "paths")
+      .datum(density)
+      .attr("fill", "none")
+      .attr("stroke", "#000")
+      .attr("stroke-width", 1.5)
+      .attr("stroke-linejoin", "round")
+      .attr("d",  d3.line()
+          .curve(d3.curveBasis)
+          .x(function(d) { return x(d[0]); })
+          .y(function(d) { return y(d[1]); }));
+
+function kernelDensityEstimator(kernel, X) {
+  return function(V) {
+    return X.map(function(x) {
+      return [x, d3.mean(V, function(v) { return kernel(x - v); })];
+    });
+  };
+}
+
+function kernelEpanechnikov(k) {
+  return function(v) {
+    return Math.abs(v /= k) <= 1 ? 0.75 * (1 - v * v) / k : 0;
+  };
+}
   }

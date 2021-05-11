@@ -1,14 +1,4 @@
-function drawMap(boroughs, locations) {
-    var width = 900;
-    var height = 600;
-    var svg = d3
-        .select("body")
-        .append("svg")
-        .attr("width", mapCoordsWidth + margin.left + margin.right)
-        .attr("height", mapCoordsHeight)
-        .append("g")
-        .attr("transform", "translate(" + 0 + "," + (margin.top + -50) + ")");
-
+function drawMap(boroughs, locations, svg) {
     var projection = d3.geoMercator() // mercator makes it easy to center on specific lat/long
         .scale(35000)
         .center([-73.6, 40.70]); // long, lat of NYC //[-73.94, 40.70]
@@ -31,36 +21,28 @@ function drawMap(boroughs, locations) {
             }))
             .range([2, 15]);
 
-        // Add the tooltip container to the vis container
-        // it's invisible and its position/contents are defined during mouseover
-        var tooltip = d3.select("#map-container").append("div")
-            .attr("class", "tooltip")
-            .style("opacity", 0);
+  var showTooltip = function(d) {
+    Tooltip
+      .style("opacity", 1)
+    d3.select(this)
+      .style("stroke", "black")
+      .style("opacity", 1)
 
-        // tooltip mouseover event handler
-        var tipMouseover = function (d) {
-            this.setAttribute("class", "circle-hover"); // add hover class to emphasize
+  };
+  var moveTooltip = function(d) {
+    Tooltip
+      .html(d["SchoolName"])
+      .style("left", (d3.mouse(this)[0]) + "px")
+      .style("top", (d3.mouse(this)[1]) + "px")
+  };
+  var hideTooltip = function(d) {
+    Tooltip
+      .style("opacity", 0)
+    d3.select(this)
+      .style("stroke", "none")
+      .style("opacity", 0.8)
+  };
 
-            var color = colorScale(d.BoroughId);
-            /*var html = "<span style='color:" + color + ";'>" + d.CR + "</span><br/>" +
-                "Count: " + d.TOT + "<br/>Date: " + d.MO + "/" + d.YR;*/
-
-            /*tooltip.html(html)
-                .style("left", (d3.event.pageX + 15) + "px")
-                .style("top", (d3.event.pageY - 28) + "px")
-                .transition()
-                .duration(200) // ms
-                .style("opacity", .9) // started as 0!*/
-        };
-
-        // tooltip mouseout event handler
-        var tipMouseout = function (d) {
-            this.classList.remove("circle-hover"); // remove hover class
-
-            tooltip.transition()
-                .duration(300) // ms
-                .style("opacity", 0); // don't care about position!
-        };
 
         var circles = svg.selectAll("circle")
             .data(locations)
@@ -78,9 +60,10 @@ function drawMap(boroughs, locations) {
                 return d.SampleId;
             })
             .attr("class","brushed")  //original color
-            .attr("r", 3)
-            .on("mouseover", tipMouseover)
-            .on("mouseout", tipMouseout);
+            .attr("r", 3.4)
+                .on("mouseover", showTooltip )
+    .on("mousemove", moveTooltip )
+    .on("mouseleave", hideTooltip );;
 
         addLegend(colorScale);
 
