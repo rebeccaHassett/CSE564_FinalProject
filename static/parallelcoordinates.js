@@ -13,7 +13,7 @@ function drawParallelCoordinates(data, dimensions) {
 
     svg
         .append("text")
-        .attr("x", 300)
+        .attr("x", 350)
         .attr("y", -65)
         .text("Parallel Coordinates Plot")
         .style("font-weight", "bold")

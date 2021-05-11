@@ -8,7 +8,7 @@ function drawScatterplotMatrix(data) {
         .attr("height", height + margin.top + margin.bottom)
         .append("g")
         .attr("transform",
-            "translate(" + margin.left + "," + margin.top + ")");
+            "translate(" + (margin.left + 80) + "," + (margin.top) + ")");
 
     d3.select("body")
       .append("select")
@@ -40,14 +40,14 @@ function drawScatterplotMatrix(data) {
     // Add X label
     svg
     .append("text")
-    .attr("x", width / 2 - 50)
+    .attr("x", 337)
     .attr("y", height + 40)
     .text("Percent Black");
 
     //Add Title
     svg
     .append("text")
-    .attr("x", width / 2)
+    .attr("x", (width - margin.right - margin.left ) / 2)
     .attr("y", -30)
     .text("Bubble Plot")
     .style("font-weight", "bold")
@@ -60,6 +60,9 @@ function drawScatterplotMatrix(data) {
         .range([height, 0]);
     svg.append("g")
         .call(d3.axisLeft(y));
+
+    d3.selectAll(".tick").style("font-size", "12px");
+    d3.selectAll(".tick > text").attr("x", "-15");
 
     // Add Y label 
     svg

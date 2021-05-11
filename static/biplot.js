@@ -6,7 +6,7 @@ function drawBiPlot(data) {
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
       .append("g")
-      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+      .attr("transform", "translate(" + margin.left + "," + (margin.top - 25) + ")");
     var pc1 = eigenvector[0];
     var pc2 = eigenvector[1];
     domain_x = [-0.8, 0.8];
@@ -24,14 +24,14 @@ function drawBiPlot(data) {
     //add x-label
     svg
       .append("text")
-      .attr("x", width / 2)
-      .attr("y", height + 40)
+      .attr("x", (width - 20) / 2)
+      .attr("y", height + 35)
       .text("PC1");
   
     svg
       .append("text")
-      .attr("x", width / 2)
-      .attr("y", -30)
+      .attr("x", (width - 50) / 2)
+      .attr("y", -10)
       .text("BiPlot")
       .style("font-weight", "bold")
       .style("font-size", "20px");
@@ -83,12 +83,13 @@ function drawBiPlot(data) {
       .enter()
       .append("line")
       .style("stroke", "red")
+        .style("stroke-width", "2.5px")
       .attr("x1", x(0))
       .attr("y1", y(0))
       .attr("x2", (d) => x(d.x))
       .attr("y2", (d) => y(d.y));
     
-    line.selectAll(".barsEndlineText")
+    /*line.selectAll(".barsEndlineText")
       .data(biPlot_line)
       .enter()
       .append("text")
@@ -98,6 +99,6 @@ function drawBiPlot(data) {
       .attr("y", (d) => y(d.y))
       .attr("font-size","5px")
       .attr("font-weight","bold")
-      .text((d)=>d.attribute);
+      .text((d)=>d.attribute);*/
   }
   

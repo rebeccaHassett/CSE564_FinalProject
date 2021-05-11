@@ -1,13 +1,13 @@
 function drawScreePlot(data) {
     var width = 550;
-    var height = 250;
+    var height = 265;
      var svg = d3
         .select("#screeplot")
         .append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height)
         .append("g")
-        .attr("transform", "translate(" + -20 + "," + -10 + ")");
+        .attr("transform", "translate(" + -20 + "," + -25 + ")");
 
      var allGroup = d3.map(data, function(d){return(d.BoroughId)}).keys();
 
@@ -98,20 +98,31 @@ var y = d3.scaleLinear()
     .range([height - margin.bottom, margin.top]);
 
 svg.append("g")
-    .attr("class", "axis axis--x")
     .attr("transform", "translate(0," + (height - margin.bottom) + ")")
     .call(d3.axisBottom(x))
   .append("text")
-    .attr("x", ((width +margin.left + margin.right) / 2))
-    .attr("y", -170)
+    .attr("x", ((width + 105) / 2))
+    .attr("y", -175)
     .attr("fill", "#000")
     .attr("text-anchor", "end")
     .attr("font-weight", "bold")
     .attr("font-size", "20px")
-    .text("Student Enrollment");
+    .text("Histogram");
+
+    svg
+      .append("text")
+      .attr("x", 225)
+      .attr("y", 250)
+      .text("Percent Tested");
+
+    svg
+      .append("text")
+      //.attr("transform", "rotate(-90)")
+      .attr("x", 20)
+      .attr("y",125)
+      .text("Frequency");
 
 svg.append("g")
-    .attr("class", "axis axis--y")
     .attr("transform", "translate(" + margin.left + ",0)")
     .call(d3.axisLeft(y).ticks(null, "%"));
 

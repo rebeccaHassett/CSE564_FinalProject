@@ -1,5 +1,4 @@
 function drawBarChart(data) {
-  var width = 300;
   data["columns"] = ["borough", "SAT Math", "SAT Reading", "SAT Writing", "BoroughId"];
   var myColor = d3.scaleOrdinal(d3.schemeCategory10);
   var svg = d3
@@ -8,7 +7,7 @@ function drawBarChart(data) {
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
     .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    .attr("transform", "translate(" + margin.left + "," + (margin.top - 25) + ")");
 
   // Parse the Data
   var subgroups = data.columns.slice(1);
@@ -22,12 +21,12 @@ function drawBarChart(data) {
   var x = d3.scaleBand().domain(boroughs).range([0, width]).padding([0.2]);
   svg
     .append("g")
-    .attr("transform", "translate(0," + height + ")")
+    .attr("transform", "translate(-5," + height + ")")
     .call(d3.axisBottom(x).tickSize(0));
 
   svg.append("text")
-  .attr("x", width/2 - 30)
-  .attr("y", height + 40)
+  .attr("x", width/2 - 45)
+  .attr("y", height + 30)
   .text("Borough");
   // Add Y axis
   var y = d3.scaleLinear().domain([0, 800]).range([height, 0]);
@@ -35,7 +34,7 @@ function drawBarChart(data) {
 
   svg.append("text")
   .attr("transform", "rotate(-90)")
-  .attr("x", -(height / 2) - 50)
+  .attr("x", -(height / 2) - 65)
   .attr("y", - 40)
   .text("Average SAT Scores");
 
@@ -49,8 +48,8 @@ function drawBarChart(data) {
   // title
   svg
   .append("text")
-  .attr("x", width / 2 - 140)
-  .attr("y", -30)
+  .attr("x", width / 2 - 160)
+  .attr("y", -10)
   .text("Average SAT Scores By Borough")
   .style("font-weight", "bold")
   .attr("fill", "black")
