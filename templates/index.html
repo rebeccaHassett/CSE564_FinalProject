@@ -9,6 +9,15 @@
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
 <style>
+    body {
+        background-color:#212121;
+    }
+    text{
+        fill:white;
+    }
+    .tick line,path{
+        stroke: white;
+    }
 
     .background path {
         fill: none;
@@ -31,12 +40,13 @@
     .axis line,
     .axis path {
         fill: none;
-        stroke: #000;
+        /* stroke: #000; */
+        stroke:white;
         shape-rendering: crispEdges;
     }
 
     .axis text {
-        text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
+        /* text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff; */
         cursor: move;
     }
 
@@ -123,6 +133,27 @@
     }
 </style>
 <body>
+    <nav class="navbar navbar-dark bg-dark" style = "padding-top: 0 !important; padding-bottom: 0 !important;">
+        <span class="navbar-text" style="font-weight:bold; color:white">
+            NYC Public Schools SAT Scores
+        </span>
+        <button onClick = "window.location.reload()">
+            Reset Dashboard
+        </button>
+    </nav>
+    <div class="row">
+        <div class="col-lg-4" id = "map" style="border: 1px solid grey;"></div>
+        <div class="col-lg-8" id = "bubble" style="border: 1px solid grey;">
+            <div class="row" style="border: 1px solid grey;">
+                <div class="col-12" id = "PCP"></div>
+            </div>
+        </div>
+    </div>
+    <div class="row" >
+        <div class="col-lg-4" id = "barchart" style="border: 1px solid grey;"></div>
+        <div class="col-lg-4" id = "screeplot" style="border: 1px solid grey;"></div>
+        <div class="col-lg-4" id = "biplot" style="border: 1px solid grey;"></div>   
+    </div>
 <script src="http://d3js.org/d3.v4.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>

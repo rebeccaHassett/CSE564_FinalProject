@@ -2,7 +2,8 @@ function drawMap(boroughs, locations) {
     var width = 900;
     var height = 600;
     var svg = d3
-        .select("body")
+        // .select("body")
+        .select("#map")
         .append("svg")
         .attr("width", mapCoordsWidth + margin.left + margin.right)
         .attr("height", mapCoordsHeight)
@@ -119,7 +120,8 @@ function drawMap(boroughs, locations) {
             .attr("y", 9)
             .attr("dy", ".35em")
             .style("text-anchor", "end")
-            .style("fill","black")
+            //.style("fill","black")
+            .style("fill","white")
             .text(function (d) {
                 if(d === 1)
                 {

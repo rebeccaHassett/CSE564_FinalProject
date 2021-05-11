@@ -1,12 +1,9 @@
 function drawScreePlot(data) {
     const { exp_var, cum_exp_var, attribute, eigenvector } = data;
-    var svg = d3.select("body")
+    var svg = d3.select("#screeplot")
       .append("svg")
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
-            .style("position", "relative")
-    .style("bottom", "350px")
-        .style("left", "500px")
       .append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
   
