@@ -12,7 +12,8 @@ function drawScatterplotMatrix(data) {
 
     d3.select("body")
       .append("select")
-          .attr("id", "raceSelectButton");
+          .attr("id", "raceSelectButton")
+        .style("position", "relative").style("left", "33%").style("bottom", "480px");
 
 
     // add the options to the button

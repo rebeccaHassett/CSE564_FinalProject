@@ -1,11 +1,13 @@
 function drawScreePlot(data) {
+    var width = 550;
+    var height = 250;
      var svg = d3
         .select("#screeplot")
         .append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height)
         .append("g")
-        .attr("transform", "translate(" + 0 + "," + (margin.top + 0) + ")");
+        .attr("transform", "translate(" + -20 + "," + -10 + ")");
 
      var allGroup = d3.map(data, function(d){return(d.BoroughId)}).keys();
 
@@ -88,11 +90,11 @@ function drawScreePlot(data) {
   });
 
     var x = d3.scaleLinear()
-    .domain([0, 800])
+    .domain([0, 100])
     .range([margin.left, width - margin.right]);
 
 var y = d3.scaleLinear()
-    .domain([0, 0.1])
+    .domain([0, 0.04])
     .range([height - margin.bottom, margin.top]);
 
 svg.append("g")
@@ -100,12 +102,13 @@ svg.append("g")
     .attr("transform", "translate(0," + (height - margin.bottom) + ")")
     .call(d3.axisBottom(x))
   .append("text")
-    .attr("x", width - margin.right)
-    .attr("y", -6)
+    .attr("x", ((width +margin.left + margin.right) / 2))
+    .attr("y", -170)
     .attr("fill", "#000")
     .attr("text-anchor", "end")
     .attr("font-weight", "bold")
-    .text("Time between eruptions (min.)");
+    .attr("font-size", "20px")
+    .text("Student Enrollment");
 
 svg.append("g")
     .attr("class", "axis axis--y")
