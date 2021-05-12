@@ -1,6 +1,6 @@
 function drawBiPlot(data) {
-    const { eigenvector, pca_data,attribute } = data;
-
+    const { eigenvector, pca_data,attribute,biPlotSampleID } = data;
+    console.log(data);
     var svg = d3.select("#biplot")
       .append("svg")
       .attr("width", width + margin.left + margin.right)
@@ -57,17 +57,22 @@ function drawBiPlot(data) {
   
     biPlot_pc = [];
     for (var i = 0; i < pca_data[0].length; i++) {
-      biPlot_pc.push({ x: xs[i], y: ys[i] });
+      biPlot_pc.push({ x: xs[i], y: ys[i],SampleID: biPlotSampleID[i]});
     }
-    svg
+
+    biPlotScatters = svg
       .append("g")
       .selectAll("dot")
-      .data(biPlot_pc)
+      .data(biPlotSampleID)
       .enter()
       .append("circle")
+      .attr("class", "biplot-scatters")
       .attr("cx", (d) => x(d.x))
       .attr("cy", (d) => y(d.y))
-      .attr("r", 1)
+      .attr("r", 1.5)
+      .attr("SampleId", function (d) {
+        return d["SampleId"];
+      })
       .style("fill", "#3498db");
 
       
@@ -98,6 +103,7 @@ function drawBiPlot(data) {
       .attr("y", (d) => y(d.y))
       .attr("font-size","5px")
       .attr("font-weight","bold")
-      .text((d)=>d.attribute);
+      .text((d)=>d.attribute) 
+
+      return [svg];
   }
-  

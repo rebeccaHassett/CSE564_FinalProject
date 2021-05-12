@@ -81,7 +81,7 @@ def getBarPlotData():
 # def getHistogramData():
 def getPCAData():
     numerical_df = new_df.drop(columns=['Borough', 'Start Time',"End Time", "Longitude", "Latitude","School Name"]) # drop categorical data, only numerical data for PCA
-    df_standard =  StandardScaler().fit_transform(numerical_df) 
+    df_standard = StandardScaler().fit_transform(numerical_df) 
     pca = PCA() 
     new_pc = pca.fit_transform(df_standard)  
     exp_var = pca.explained_variance_ratio_.tolist() #vars
@@ -90,11 +90,24 @@ def getPCAData():
     eigenvector = pca.components_.tolist()
     pca_data = np.transpose(new_pc).tolist()
 
-    return exp_var,cum_exp_var,attribute,eigenvector,pca_data
+    biPlotSamples = []
+    num = 0 
+    iterate_list = df_standard.tolist()
+    min_x,max_x = min(pca_data[0]), max(pca_data[0])
+    min_y,max_y = min(pca_data[1]), max(pca_data[1])
+
+    for index, row in numerical_df.iterrows():
+        biPlotSample = {}
+        biPlotSample["SampleId"] = index
+        biPlotSample["x"] = pca_data[0][num] / (max_x - min_x)
+        biPlotSample["y"] = pca_data[1][num] / (max_y - min_y)
+        num +=1
+        biPlotSamples.append(biPlotSample)
+
+    return exp_var,cum_exp_var,attribute,eigenvector,pca_data,biPlotSamples
 
 def getParallelCoordsData():
     parall_coords_df = new_df.drop(columns=['Latitude', 'Longitude', 'School Name'])
-
     cols = parall_coords_df.columns.values
 
     parallel_coords = []
@@ -170,5 +183,5 @@ def getHistogramData():
     for index, row in new_df.iterrows():
         percent_tested.append(row["Percent Tested"])
     histo_data["data"] = percent_tested
-    print(percent_tested)
+    #print(percent_tested)
     return histo_data
