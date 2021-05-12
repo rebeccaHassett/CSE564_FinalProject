@@ -37,6 +37,9 @@ axios.get("http://127.0.0.1:5000/api").then(function ({data}) {
         mapBrushBorough(d.BoroughId);
         bubbleBrushBorough(d.BoroughId);
         parallelCoordsBrushBorough(d.BoroughId);
+        brushedSampleIds.length = 0;
+
+        updateHistoChart(brushedSampleIds, data.scatterplotmatrix_data, d.BoroughId);
         bar_tooltip
             .style("opacity", 1);
         d3.select(this)
@@ -64,6 +67,14 @@ axios.get("http://127.0.0.1:5000/api").then(function ({data}) {
         graphElements[2].style("display", function (d) {
             return null;
         });
+        /*brushedSampleIds.length = 0;
+        for(var i = 1; i < 432; i++)
+        {
+            brushedSampleIds.push(Number(i));
+        }
+        console.log(typeof brushedSampleIds[0]);
+        updateHistoChart(brushedSampleIds, data.scatterplotmatrix_data);*/
+
         bar_tooltip
             .style("opacity", 0);
         d3.select(this)
@@ -137,6 +148,79 @@ axios.get("http://127.0.0.1:5000/api").then(function ({data}) {
     histogramElements[0].on("mouseover", histo_ShowTooltip)
         .on("mousemove", histo_MoveTooltip)
         .on("mouseleave", histo_HideTooltip);
+
+    function updateHistoChart(sampleIds, data, boroughId = -1) {
+        // recompute density estimation
+        kde = kernelDensityEstimator(kernelEpanechnikov(3), histoX.ticks(40));
+        var density = kde(data
+            .filter(function (d) {
+                if (boroughId > -1) {
+                    return boroughId == d.BoroughId;
+                } else {
+                    return sampleIds.includes(d.SampleId.toString());
+                }
+            })
+            .map(function (d) {
+                return +d["Percent Tested"];
+            })
+        );
+
+        var n = data.length,
+            bins = d3.histogram().domain(histoX.domain()).thresholds(40)(data
+                .filter(function (d) {
+                    if (boroughId > -1) {
+                        return boroughId == d.BoroughId;
+                    } else {
+                        return sampleIds.includes(d.SampleId.toString());
+                    }
+                })
+                .map(function (d) {
+                    return +d["Percent Tested"];
+                }));
+
+        d3.selectAll(".paths").remove();
+        d3.selectAll(".bars").remove();
+
+        histogramElements[1].insert("g", "*")
+            .attr("fill", "#bbb")
+            .selectAll("rect")
+            .data(bins)
+            .enter().append("rect")
+            .attr("class", "bars")
+            .attr("fill", "#69b3a2")
+            .attr("x", function (d) {
+                return histoX(d.x0) + 1;
+            })
+            .attr("y", function (d) {
+                return histoY(d.length / n);
+            })
+            .attr("width", function (d) {
+                return histoX(d.x1) - histoX(d.x0) - 1;
+            })
+            .attr("height", function (d) {
+                return histoY(0) - histoY(d.length / n);
+            }).on("mouseover", histo_ShowTooltip)
+            .on("mousemove", histo_MoveTooltip)
+            .on("mouseleave", histo_HideTooltip);
+        ;
+
+        histogramElements[1].append("path")
+            .attr("class", "paths")
+            .datum(density)
+            .attr("fill", "none")
+            .attr("stroke", "#000")
+            .attr("stroke-width", 1.5)
+            .attr("stroke-linejoin", "round")
+            .attr("d", d3.line()
+                .curve(d3.curveBasis)
+                .x(function (d) {
+                    return histoX(d[0]);
+                })
+                .y(function (d) {
+                    return histoY(d[1]);
+                }));
+    }
+
     drawBiPlot(data);
 
     var extents = data.column_names.map(function (p) {
@@ -147,7 +231,7 @@ axios.get("http://127.0.0.1:5000/api").then(function ({data}) {
     graphElements[0].append("g")
         .attr("class", "brush")
         .each(function (d) {
-            d3.select(this).call(graphElements[1][d].brush = d3.brushY().extent([[-8, 0], [8, height]]).on("brush start", brushstart).on("brush", brush_parallel_chart));
+            d3.select(this).call(graphElements[1][d].brush = d3.brushY().extent([[-8, 0], [8, height]]).on("brush start", brushstart).on("brush", brush_parallel_chart).on("end", brush_parallel_end));
         })
         .selectAll("rect")
         .attr("x", -8)
@@ -158,8 +242,10 @@ axios.get("http://127.0.0.1:5000/api").then(function ({data}) {
         d3.event.sourceEvent.stopPropagation();
     }
 
+    function brush_parallel_end() {
+        updateHistoChart(brushedSampleIds, data.scatterplotmatrix_data);
+    }
 
-// Handles a brush event, toggling the display of foreground lines.
     function brush_parallel_chart() {
         for (var i = 0; i < data.column_names.length; ++i) {
             if (d3.event.target == graphElements[1][data.column_names[i]].brush) {
@@ -169,6 +255,7 @@ axios.get("http://127.0.0.1:5000/api").then(function ({data}) {
 
         mapElements[1].attr("class", "non_brushed");
         globalCircles.attr("class", "non_brushed");
+        brushedSampleIds.length = 0;
 
         graphElements[2].style("display", function (d) {
             var isBrushedLine = data.column_names.every(function (p, i) {
@@ -179,6 +266,8 @@ axios.get("http://127.0.0.1:5000/api").then(function ({data}) {
             }) ? null : "none";
 
             if (isBrushedLine !== "none") {
+                var SampleId = d3.select(this).attr("SampleId");
+                brushedSampleIds.push(SampleId);
                 mapBrushSample(d["SampleId"]);
                 bubbleBrushSample(d["SampleId"]);
             }
@@ -197,6 +286,7 @@ axios.get("http://127.0.0.1:5000/api").then(function ({data}) {
             graphElements[2].style("display", function (d) {
                 return "none";
             });
+            brushedSampleIds.length = 0;
 
             //coordinates describing the corners of the brush
             var brush_coords = d3.brushSelection(this);
@@ -211,6 +301,7 @@ axios.get("http://127.0.0.1:5000/api").then(function ({data}) {
                 var isBrushedCircle = isBrushed(brush_coords, cx, cy);
 
                 if (isBrushedCircle) {
+                    brushedSampleIds.push(SampleId);
                     parallelCoordsBrushSample(SampleId);
                     bubbleBrushSample(SampleId);
                 }
@@ -244,6 +335,7 @@ axios.get("http://127.0.0.1:5000/api").then(function ({data}) {
         //set all circles to original color
         mapElements[0].selectAll(".non_brushed").classed("brushed", true);
 
+        updateHistoChart(brushedSampleIds, data.scatterplotmatrix_data);
     }
 
     var bubbleBrush = d3.brush()
@@ -262,6 +354,7 @@ axios.get("http://127.0.0.1:5000/api").then(function ({data}) {
             graphElements[2].style("display", function (d) {
                 return "none";
             });
+            brushedSampleIds.length = 0;
 
             //coordinates describing the corners of the brush
             var brush_coords = d3.brushSelection(this);
@@ -276,6 +369,7 @@ axios.get("http://127.0.0.1:5000/api").then(function ({data}) {
                 var isBrushedCircle = isBrushed(brush_coords, cx, cy);
 
                 if (isBrushedCircle) {
+                    brushedSampleIds.push(SampleId);
                     parallelCoordsBrushSample(SampleId);
                     mapBrushSample(SampleId);
                 }
@@ -297,6 +391,7 @@ axios.get("http://127.0.0.1:5000/api").then(function ({data}) {
         //set all circles to original color
         bubbleElements[0].selectAll(".non_brushed").classed("brushed", true);
 
+        updateHistoChart(brushedSampleIds, data.scatterplotmatrix_data);
     }
 
     function mapBrushPercentTested(enrollLowRange, enrollHighRange) {
@@ -362,3 +457,24 @@ var margin = {top: 50, right: 70, bottom: 50, left: 70},
     mapCoordsHeight = 450;
 
 var globalCircles;
+
+var brushedSampleIds = [];
+
+var histoX;
+var histoY;
+
+function kernelDensityEstimator(kernel, X) {
+    return function (V) {
+        return X.map(function (x) {
+            return [x, d3.mean(V, function (v) {
+                return kernel(x - v);
+            })];
+        });
+    };
+}
+
+function kernelEpanechnikov(k) {
+    return function (v) {
+        return Math.abs(v /= k) <= 1 ? 0.75 * (1 - v * v) / k : 0;
+    };
+}
