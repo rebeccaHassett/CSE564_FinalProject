@@ -27,8 +27,7 @@ function drawParallelCoordinates(data, dimensions) {
 
     var line = d3.line(),
         background,
-        foreground,
-        extents;
+        foreground;
 
     var quant_p = function (v) {
         return (parseFloat(v) == v) || (v == "")
@@ -72,6 +71,9 @@ function drawParallelCoordinates(data, dimensions) {
         .attr("d", path)
         .attr("SampleId", function (d) {
             return d["SampleId"];
+        })
+        .attr("BoroughId", function (d) {
+            return d["color"];
         })
         .style("stroke", function (d) {
             return colors(d["color"]);

@@ -1,4 +1,4 @@
-function drawScatterplotMatrix(data) {
+function drawBubbleChart(data) {
     var width = 800;
     var height = 120;
 // append the svg object to the body of the page
@@ -97,6 +97,9 @@ function drawScatterplotMatrix(data) {
         })
         .attr("SampleId", function (d) {
             return d["SampleId"];
+        })
+        .attr("BoroughId", function (d) {
+            return d["BoroughId"];
         })
         .style("fill", function (d)     {
             return myColor(d["BoroughId"]);

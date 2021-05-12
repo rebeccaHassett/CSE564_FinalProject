@@ -1,8 +1,8 @@
-function drawScreePlot(data) {
+function drawHistogram(data) {
     var width = 550;
     var height = 265;
      var svg = d3
-        .select("#screeplot")
+        .select("#histogram")
         .append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height)
