@@ -93,18 +93,6 @@ function drawBiPlot(data) {
       .attr("y1", y(0))
       .attr("x2", (d) => x(d.x))
       .attr("y2", (d) => y(d.y));
-    
-    /*line.selectAll(".barsEndlineText")
-      .data(biPlot_line)
-      .enter()
-      .append("text")
-      .attr('class', 'barsEndlineText')
-      .attr('text-anchor', 'middle')
-      .attr("x", (d) => x(d.x))
-      .attr("y", (d) => y(d.y))
-      .attr("font-size","5px")
-      .attr("font-weight","bold")
-      .text((d)=>d.attribute) 
 
-      return [svg];
+    return [svg];
   }
