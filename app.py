@@ -27,7 +27,7 @@ def add_header(r):
 def get_data():
     data_set,dict_df = getData()
     bar_plot_data = getBarPlotData()
-    exp_var,cum_exp_var,attribute,eigenvector,pca_data = getPCAData()
+    exp_var,cum_exp_var,attribute,eigenvector,pca_data,biPlotSampleID= getPCAData()
     parallel_coords_data = getParallelCoordsData()
     scatterplotmatrix_data = getScatterplotMatrixData()
     borough_data = getBoroughData()
@@ -43,6 +43,7 @@ def get_data():
         "attribute":attribute,
         "eigenvector":eigenvector,
         "pca_data":pca_data,
+        "biPlotSampleID":biPlotSampleID,
         "parallel_coords_data":parallel_coords_data,
         "scatterplotmatrix_data":scatterplotmatrix_data,
         "column_names":column_names,

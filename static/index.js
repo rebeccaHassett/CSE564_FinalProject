@@ -221,7 +221,7 @@ axios.get("http://127.0.0.1:5000/api").then(function ({data}) {
                 }));
     }
 
-    drawBiPlot(data);
+    var biPlotElements = drawBiPlot(data);
 
     var extents = data.column_names.map(function (p) {
         return [0, 0];
@@ -255,6 +255,7 @@ axios.get("http://127.0.0.1:5000/api").then(function ({data}) {
 
         mapElements[1].attr("class", "non_brushed");
         globalCircles.attr("class", "non_brushed");
+        biPlotScatters.attr("class", "non_brushed");
         brushedSampleIds.length = 0;
 
         graphElements[2].style("display", function (d) {
@@ -309,10 +310,162 @@ axios.get("http://127.0.0.1:5000/api").then(function ({data}) {
                 return isBrushedCircle;
             })
                 .attr("class", "brushed");
-
         }
-    }
+        return extents[i][1] <= d[p] && d[p] <= extents[i][0];
+      })
+        ? null
+        : "none";
 
+      if (isBrushedLine !== "none") {
+        mapBrushSample(d["SampleId"]);
+        bubbleBrushSample(d["SampleId"]);
+        biPlotBrushSample(d["SampleId"]);
+      }
+
+      return isBrushedLine;
+    });
+  }
+
+  function highlightBrushedCircles() {
+    if (d3.event.selection != null) {
+      // set circles to "non_brushed"
+      mapElements[1].attr("class", "non_brushed");
+      globalCircles.attr("class", "non_brushed");
+      biPlotScatters.attr("class", "non_brushed");
+      graphElements[2].style("display", function (d) {
+        return "none";
+      });
+
+      //coordinates describing the corners of the brush
+      var brush_coords = d3.brushSelection(this);
+
+      // set the circles within the brush to class "brushed" to style them accordingly
+      mapElements[1]
+        .filter(function () {
+          var cx = d3.select(this).attr("cx"),
+            cy = d3.select(this).attr("cy"),
+            SampleId = d3.select(this).attr("SampleId");
+          var isBrushedCircle = isBrushed(brush_coords, cx, cy);
+
+          if (isBrushedCircle) {
+            parallelCoordsBrushSample(SampleId);
+            bubbleBrushSample(SampleId);
+            biPlotBrushSample(SampleId);
+          }
+
+          return isBrushedCircle;
+        })
+        .attr("class", "brushed");
+    }
+  }
+
+  function isBrushed(brush_coords, cx, cy) {
+    //the corners of the brush
+    var x0 = brush_coords[0][0],
+      x1 = brush_coords[1][0],
+      y0 = brush_coords[0][1],
+      y1 = brush_coords[1][1];
+
+    //checks whether the circle is within the brush
+    return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1;
+  }
+
+  function mapBrushEnd() {
+    if (!d3.event.selection) return;
+
+    // programmed clearing of brush after mouse-up
+    d3.select(this).call(mapBrush.move, null);
+
+    //set all circles to original color
+    mapElements[0].selectAll(".non_brushed").classed("brushed", true);
+  }
+
+  var bubbleBrush = d3
+    .brush()
+    .on("brush", highlightBrushedBubbles)
+    .on("end", bubbleBrushEnd);
+
+  bubbleElements[0].call(bubbleBrush);
+  function highlightBrushedBubbles() {
+    if (d3.event.selection != null) {
+      // set circles to "non_brushed"
+      globalCircles.attr("class", "non_brushed");
+      mapElements[1].attr("class", "non_brushed");
+      graphElements[2].style("display", function (d) {
+        return "none";
+      });
+      biPlotScatters.attr("class", "non_brushed");
+      //coordinates describing the corners of the brush
+      var brush_coords = d3.brushSelection(this);
+
+      // set the circles within the brush to class "brushed" to style them accordingly
+      globalCircles
+        .filter(function () {
+          var cx = d3.select(this).attr("cx"),
+            cy = d3.select(this).attr("cy"),
+            SampleId = d3.select(this).attr("SampleId");
+          var isBrushedCircle = isBrushed(brush_coords, cx, cy);
+
+          if (isBrushedCircle) {
+            parallelCoordsBrushSample(SampleId);
+            mapBrushSample(SampleId);
+            biPlotBrushSample(SampleId);
+          }
+
+          return isBrushedCircle;
+        })
+        .attr("class", "brushed");
+    }
+  }
+
+  function bubbleBrushEnd() {
+    if (!d3.event.selection) return;
+
+    // programmed clearing of brush after mouse-up
+    d3.select(this).call(bubbleBrush.move, null);
+
+    //set all circles to original color
+    bubbleElements[0].selectAll(".non_brushed").classed("brushed", true);
+  }
+ 
+  var biPlotBrush = d3
+    .brush()
+    .on("brush", highlightBrushedScatters)
+    .on("end", biPlotBrushEnd);
+
+  biPlotElements[0].call(biPlotBrush);
+
+
+  function highlightBrushedScatters() {
+    if (d3.event.selection != null) {
+      // set circles to "non_brushed"
+      globalCircles.attr("class", "non_brushed");
+      mapElements[1].attr("class", "non_brushed");
+      graphElements[2].style("display", function (d) {
+        return "none";
+      });
+      biPlotScatters.attr("class", "non_brushed");
+      //coordinates describing the corners of the brush
+      var brush_coords = d3.brushSelection(this);
+
+      // set the circles within the brush to class "brushed" to style them accordingly
+      biPlotScatters
+        .filter(function () {
+          var cx = d3.select(this).attr("cx"),
+            cy = d3.select(this).attr("cy"),
+            SampleId = d3.select(this).attr("SampleId");
+          var isBrushedCircle = isBrushed(brush_coords, cx, cy);
+
+          if (isBrushedCircle) {
+            parallelCoordsBrushSample(SampleId);
+            mapBrushSample(SampleId);
+            bubbleBrushSample(SampleId);
+          }
+
+          return isBrushedCircle;
+        })
+        .attr("class", "brushed");
+      
     function isBrushed(brush_coords, cx, cy) {
 
         //the corners of the brush
@@ -354,6 +507,7 @@ axios.get("http://127.0.0.1:5000/api").then(function ({data}) {
             graphElements[2].style("display", function (d) {
                 return "none";
             });
+            biPlotScatters.attr("class", "non_brushed");
             brushedSampleIds.length = 0;
 
             //coordinates describing the corners of the brush
@@ -372,6 +526,7 @@ axios.get("http://127.0.0.1:5000/api").then(function ({data}) {
                     brushedSampleIds.push(SampleId);
                     parallelCoordsBrushSample(SampleId);
                     mapBrushSample(SampleId);
+                    biPlotBrushSample(SampleId);
                 }
 
                 return isBrushedCircle;
@@ -392,6 +547,44 @@ axios.get("http://127.0.0.1:5000/api").then(function ({data}) {
         bubbleElements[0].selectAll(".non_brushed").classed("brushed", true);
 
         updateHistoChart(brushedSampleIds, data.scatterplotmatrix_data);
+    }
+      
+    var biPlotBrush = d3
+    .brush()
+    .on("brush", highlightBrushedScatters)
+    .on("end", biPlotBrushEnd);
+
+  biPlotElements[0].call(biPlotBrush);
+      
+    function highlightBrushedScatters() {
+    if (d3.event.selection != null) {
+      // set circles to "non_brushed"
+      globalCircles.attr("class", "non_brushed");
+      mapElements[1].attr("class", "non_brushed");
+      graphElements[2].style("display", function (d) {
+        return "none";
+      });
+      biPlotScatters.attr("class", "non_brushed");
+      //coordinates describing the corners of the brush
+      var brush_coords = d3.brushSelection(this);
+
+      // set the circles within the brush to class "brushed" to style them accordingly
+      biPlotScatters
+        .filter(function () {
+          var cx = d3.select(this).attr("cx"),
+            cy = d3.select(this).attr("cy"),
+            SampleId = d3.select(this).attr("SampleId");
+          var isBrushedCircle = isBrushed(brush_coords, cx, cy);
+
+          if (isBrushedCircle) {
+            parallelCoordsBrushSample(SampleId);
+            mapBrushSample(SampleId);
+            bubbleBrushSample(SampleId);
+          }
+
+          return isBrushedCircle;
+        })
+        .attr("class", "brushed");
     }
 
     function mapBrushPercentTested(enrollLowRange, enrollHighRange) {
@@ -447,7 +640,52 @@ axios.get("http://127.0.0.1:5000/api").then(function ({data}) {
             return elem["SampleId"] == SampleId;
         }).style("display", null);
     }
+  }
+
+  function biPlotBrushEnd() {
+    if (!d3.event.selection) return;
+
+    // programmed clearing of brush after mouse-up
+    d3.select(this).call(biPlotBrush.move, null);
+
+    //set all circles to original color
+    biPlotElements[0].selectAll(".non_brushed").classed("brushed", true);
+  }
+
+  function mapBrushSample(SampleId) {
+    mapElements[1]
+      .filter(function (elem) {
+        return elem.SampleId == SampleId;
+      })
+      .attr("class", "brushed");
+  }
+
+  function bubbleBrushSample(SampleId) {
+    globalCircles
+      .filter(function (elem) {
+        return elem.SampleId == SampleId;
+      })
+      .attr("class", "brushed");
+    //   console.log(globalCircles);
+  }
+
+  function biPlotBrushSample(SampleId) {    
+    biPlotScatters
+      .filter(function (elem) {
+        return elem.SampleId == SampleId;
+      })
+      .attr("class", "brushed");
+  }
+
+  function parallelCoordsBrushSample(SampleId) {
+    graphElements[2]
+      .filter(function (elem) {
+        return elem["SampleId"] == SampleId;
+      })
+      .style("display", null);
+  }
 });
+
 var margin = {top: 50, right: 70, bottom: 50, left: 70},
     width = 525 - margin.left - margin.right,
     height = 265 - margin.top - margin.bottom,
@@ -457,6 +695,7 @@ var margin = {top: 50, right: 70, bottom: 50, left: 70},
     mapCoordsHeight = 450;
 
 var globalCircles;
+var biPlotScatters;
 
 var brushedSampleIds = [];
 
