@@ -11,8 +11,8 @@ function drawBubbleChart(data) {
             "translate(" + (margin.left + 80) + "," + (margin.top) + ")");
 
     d3.select("body")
-      .append("select")
-          .attr("id", "raceSelectButton")
+        .append("select")
+        .attr("id", "raceSelectButton")
         .style("position", "relative").style("left", "33%").style("bottom", "480px");
 
 
@@ -39,20 +39,20 @@ function drawBubbleChart(data) {
 
     // Add X label
     svg
-    .append("text")
-    .attr("x", 337)
-    .attr("y", height + 40)
-    .text("Percent Black");
+        .append("text")
+        .attr("x", 337)
+        .attr("y", height + 40)
+        .text("Percent Black");
 
     //Add Title
     svg
-    .append("text")
-    .attr("x", (width - margin.right - margin.left ) / 2)
-    .attr("y", -30)
-    .text("Bubble Plot")
-    .style("font-weight", "bold")
-    .attr("fill", "black")
-    .style("font-size", "20px");
+        .append("text")
+        .attr("x", (width - margin.right - margin.left) / 2)
+        .attr("y", -30)
+        .text("Bubble Plot")
+        .style("font-weight", "bold")
+        .attr("fill", "black")
+        .style("font-size", "20px");
 
     // Add Y axis
     var y = d3.scaleLinear()
@@ -66,11 +66,11 @@ function drawBubbleChart(data) {
 
     // Add Y label 
     svg
-    .append("text")
-    .attr("transform", "rotate(-90)")
-    .attr("x", -(height / 2) - 60)
-    .attr("y", -50)
-    .text("Average SAT Score");
+        .append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("x", -(height / 2) - 60)
+        .attr("y", -50)
+        .text("Average SAT Score");
 
     // Add a scale for bubble size
     var z = d3.scaleLinear()
@@ -101,34 +101,37 @@ function drawBubbleChart(data) {
         .attr("BoroughId", function (d) {
             return d["BoroughId"];
         })
-        .style("fill", function (d)     {
+        .attr("PercentTested", function (d) {
+            return d["Percent Tested"];
+        })
+        .style("fill", function (d) {
             return myColor(d["BoroughId"]);
         });
 
     function updateChart(selectedGroup) {
         d3.selectAll(".bubbles").remove();
-            // Add dots
-    globalCircles = svg.append('g')
-        .selectAll("dot")
-        .data(data)
-        .enter()
-        .append("circle")
-        .attr("class", "bubbles")
-        .attr("cx", function (d) {
-            return x(d[selectedGroup]);
-        })
-        .attr("cy", function (d) {
-            return y(d["Average SAT Score"]);
-        })
-        .attr("r", function (d) {
-            return z(d["Student Enrollment"]);
-        })
-        .attr("SampleId", function (d) {
-            return d["SampleId"];
-        })
-        .style("fill", function (d) {
-            return myColor(d["BoroughId"]);
-        });
+        // Add dots
+        globalCircles = svg.append('g')
+            .selectAll("dot")
+            .data(data)
+            .enter()
+            .append("circle")
+            .attr("class", "bubbles")
+            .attr("cx", function (d) {
+                return x(d[selectedGroup]);
+            })
+            .attr("cy", function (d) {
+                return y(d["Average SAT Score"]);
+            })
+            .attr("r", function (d) {
+                return z(d["Student Enrollment"]);
+            })
+            .attr("SampleId", function (d) {
+                return d["SampleId"];
+            })
+            .style("fill", function (d) {
+                return myColor(d["BoroughId"]);
+            });
     }
 
     d3.select("#raceSelectButton").on("change", function (d) {

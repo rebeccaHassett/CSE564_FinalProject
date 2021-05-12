@@ -75,7 +75,68 @@ axios.get("http://127.0.0.1:5000/api").then(function ({data}) {
         .on("mousemove", bar_mousemove)
         .on("mouseleave", bar_mouseleave);
 
-    drawHistogram(data.scatterplotmatrix_data);
+    var histogramElements = drawHistogram(data.scatterplotmatrix_data);
+    var histo_tooltip = d3.select("body")
+        .append("div")
+        .style("opacity", 0)
+        .attr("class", "tooltip")
+        .style("background-color", "white")
+        .style("color", "black")
+        .style("border-radius", "5px")
+        .style("padding", "10px");
+
+    var histo_ShowTooltip = function (d) {
+        mapElements[1].attr("class", "non_brushed");
+        globalCircles.attr("class", "non_brushed");
+        graphElements[2].style("display", function (d) {
+            return "none";
+        });
+        mapBrushPercentTested(d.x0, d.x1);
+        bubbleBrushPercentTested(d.x0, d.x1);
+        parallelCoordsBrushPercentTested(d.x0, d.x1);
+        histo_tooltip
+            .transition()
+            .duration(100)
+            .style("opacity", 1);
+        histo_tooltip
+            .html("Range: " + d.x0 + " - " + d.x1 + ",\nFrequency: " + d.length)
+            .style("left", (d3.mouse(this)[0] + 20) + "px")
+            .style("top", (d3.mouse(this)[1]) + "px");
+        d3.select(this)
+            .style("stroke", "white")
+            .style("opacity", 1)
+    };
+    var histo_MoveTooltip = function (d) {
+        histo_tooltip
+            .style("left", (d3.mouse(this)[0] + 250) + "px")
+            .style("top", (d3.mouse(this)[1] + 400) + "px");
+        mapElements[1].attr("class", "non_brushed");
+        globalCircles.attr("class", "non_brushed");
+        graphElements[2].style("display", function (d) {
+            return "none";
+        });
+        mapBrushPercentTested(d.x0, d.x1);
+        bubbleBrushPercentTested(d.x0, d.x1);
+        parallelCoordsBrushPercentTested(d.x0, d.x1);
+    };
+    // A function that change this tooltip when the leaves a point: just need to set opacity to 0 again
+    var histo_HideTooltip = function (d) {
+        mapElements[1].attr("class", "brushed");
+        globalCircles.attr("class", "brushed");
+        graphElements[2].style("display", function (d) {
+            return null;
+        });
+        histo_tooltip
+            .transition()
+            .duration(100)
+            .style("opacity", 0);
+        d3.select(this)
+            .style("stroke", "none")
+            .style("opacity", 0.8)
+    };
+    histogramElements[0].on("mouseover", histo_ShowTooltip)
+        .on("mousemove", histo_MoveTooltip)
+        .on("mouseleave", histo_HideTooltip);
     drawBiPlot(data);
 
     var extents = data.column_names.map(function (p) {
@@ -238,6 +299,12 @@ axios.get("http://127.0.0.1:5000/api").then(function ({data}) {
 
     }
 
+    function mapBrushPercentTested(enrollLowRange, enrollHighRange) {
+        mapElements[1].filter(function (elem) {
+            return parseFloat(enrollLowRange) <= parseFloat(elem["Percent Tested"]) && parseFloat(elem["Percent Tested"]) <= parseFloat(enrollHighRange);
+        }).attr("class", "brushed");
+    }
+
     function mapBrushBorough(BoroughId) {
         mapElements[1].filter(function (elem) {
             return elem.BoroughId === BoroughId;
@@ -247,6 +314,12 @@ axios.get("http://127.0.0.1:5000/api").then(function ({data}) {
     function mapBrushSample(SampleId) {
         mapElements[1].filter(function (elem) {
             return elem.SampleId == SampleId;
+        }).attr("class", "brushed");
+    }
+
+    function bubbleBrushPercentTested(enrollLowRange, enrollHighRange) {
+        globalCircles.filter(function (elem) {
+            return enrollLowRange <= elem["Percent Tested"] && elem["Percent Tested"] <= enrollHighRange;
         }).attr("class", "brushed");
     }
 
@@ -260,6 +333,12 @@ axios.get("http://127.0.0.1:5000/api").then(function ({data}) {
         globalCircles.filter(function (elem) {
             return elem.SampleId == SampleId;
         }).attr("class", "brushed");
+    }
+
+    function parallelCoordsBrushPercentTested(enrollLowRange, enrollHighRange) {
+        graphElements[2].filter(function (elem) {
+            return enrollLowRange <= elem["Percent Tested"] && elem["Percent Tested"] <= enrollHighRange;
+        }).style("display", null);
     }
 
     function parallelCoordsBrushBorough(BoroughId) {

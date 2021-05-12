@@ -94,7 +94,7 @@ function drawHistogram(data) {
     .range([margin.left, width - margin.right]);
 
 var y = d3.scaleLinear()
-    .domain([0, 0.04])
+    .domain([0, 0.16])
     .range([height - margin.bottom, margin.top]);
 
 svg.append("g")
@@ -128,13 +128,13 @@ svg.append("g")
 
   var n = data.length,
       bins = d3.histogram().domain(x.domain()).thresholds(40)(data
-      .filter(function(d){ return d.BoroughId == 4;})
+      .filter(function(d){ return true;})
       .map(function(d){  return +d["Percent Tested"]; })),
       density = kernelDensityEstimator(kernelEpanechnikov(7), x.ticks(40))(data
-      .filter(function(d){ return d.BoroughId == 4;})
+      .filter(function(d){ return true;})
       .map(function(d){  return +d["Percent Tested"]; }));
 
-  svg.insert("g", "*")
+  var rects = svg.insert("g", "*")
       .attr("fill", "#bbb")
     .selectAll("rect")
     .data(bins)
@@ -171,4 +171,6 @@ function kernelEpanechnikov(k) {
     return Math.abs(v /= k) <= 1 ? 0.75 * (1 - v * v) / k : 0;
   };
 }
+
+    return [rects];
   }

@@ -55,6 +55,9 @@ function drawMap(boroughs, locations, svg) {
             .attr("SampleId", function (d) {
                 return d.SampleId;
             })
+            .attr("PercentTested", function (d) {
+                return d["Percent Tested"];
+            })
             .attr("BoroughId", function (d) {
                 return d.BoroughId;
             })

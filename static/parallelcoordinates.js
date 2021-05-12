@@ -72,6 +72,9 @@ function drawParallelCoordinates(data, dimensions) {
         .attr("SampleId", function (d) {
             return d["SampleId"];
         })
+        .attr("PercentTested", function (d) {
+            return d["Percent Tested"];
+        })
         .attr("BoroughId", function (d) {
             return d["color"];
         })
@@ -136,7 +139,7 @@ function drawParallelCoordinates(data, dimensions) {
 
     return [g, y, foreground];
 
-        function position(d) {
+    function position(d) {
         var v = dragging[d];
         return v == null ? x(d) : v;
     }

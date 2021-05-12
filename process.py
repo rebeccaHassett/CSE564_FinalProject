@@ -161,7 +161,7 @@ def getBoroughData():
 def getLocationData():
     location_data = []
     for index, row in new_df.iterrows():
-        location_data.append({"longitude": row["Longitude"], "latitude": row["Latitude"], "BoroughId": getBoroughId(row["Borough"]), "SampleId": index, "SchoolName": row["School Name"]})
+        location_data.append({"longitude": row["Longitude"], "latitude": row["Latitude"], "BoroughId": getBoroughId(row["Borough"]), "SampleId": index, "SchoolName": row["School Name"], "Percent Tested": row["Percent Tested"]})
     return location_data
 
 def getHistogramData():
