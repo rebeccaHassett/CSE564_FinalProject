@@ -1,6 +1,7 @@
 function drawBarChart(data) {
   data["columns"] = ["borough", "SAT Math", "SAT Reading", "SAT Writing", "BoroughId"];
   var myColor = d3.scaleOrdinal(d3.schemeCategory10);
+  //var myColor = ["#419ede", "#1F77B4", "#144c73", "#ffa85b", "#FF7F0E", "#c15a00", "#4bce4b", "#2CA02C", "#1c641c", "#e36667", "#d62728", "#951b1c", "#ba9cd4", "#9467BD", "#6e4196"];
   var svg = d3
     .select("#barchart")
     .append("svg")

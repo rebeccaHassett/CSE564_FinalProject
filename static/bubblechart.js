@@ -49,7 +49,7 @@ function drawBubbleChart(data) {
         .append("text")
         .attr("x", (width - margin.right - margin.left) / 2)
         .attr("y", -30)
-        .text("Bubble Plot")
+        .text("Bubble Chart")
         .style("font-weight", "bold")
         .attr("fill", "black")
         .style("font-size", "20px");
