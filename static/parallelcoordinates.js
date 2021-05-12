@@ -13,7 +13,7 @@ function drawParallelCoordinates(data, dimensions) {
 
     svg
         .append("text")
-        .attr("x", 300)
+        .attr("x", 350)
         .attr("y", -65)
         .text("Parallel Coordinates Plot")
         .style("font-weight", "bold")
@@ -27,8 +27,7 @@ function drawParallelCoordinates(data, dimensions) {
 
     var line = d3.line(),
         background,
-        foreground,
-        extents;
+        foreground;
 
     var quant_p = function (v) {
         return (parseFloat(v) == v) || (v == "")
@@ -72,6 +71,12 @@ function drawParallelCoordinates(data, dimensions) {
         .attr("d", path)
         .attr("SampleId", function (d) {
             return d["SampleId"];
+        })
+        .attr("PercentTested", function (d) {
+            return d["Percent Tested"];
+        })
+        .attr("BoroughId", function (d) {
+            return d["color"];
         })
         .style("stroke", function (d) {
             return colors(d["color"]);
@@ -134,7 +139,7 @@ function drawParallelCoordinates(data, dimensions) {
 
     return [g, y, foreground];
 
-        function position(d) {
+    function position(d) {
         var v = dragging[d];
         return v == null ? x(d) : v;
     }

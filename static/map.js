@@ -17,33 +17,37 @@ function drawMap(boroughs, locations, svg) {
     var addPointsToMap = function (locations) {
         var colorScale = d3.scaleOrdinal(d3.schemeCategory10);
 
-        var radiusScale = d3.scaleSqrt()
-            .domain(d3.extent(locations, function (location) {
-                return +1;
-            }))
-            .range([2, 15]);
+            var Tooltip = d3.select("body")
+        .append("div")
+        .style("opacity", 0)
+        .attr("class", "tooltip")
+        .style("background-color", "white")
+        .style("border", "solid")
+        .style("border-width", "2px")
+        .style("border-radius", "5px")
+        .style("padding", "5px");
 
-  var showTooltip = function(d) {
-    Tooltip
-      .style("opacity", 1)
-    d3.select(this)
-      .style("stroke", "black")
-      .style("opacity", 1)
+        var showTooltip = function (d) {
+            Tooltip
+                .style("opacity", 1)
+            d3.select(this)
+                .style("stroke", "black")
+                .style("opacity", 1)
 
-  };
-  var moveTooltip = function(d) {
-    Tooltip
-      .html(d["SchoolName"])
-      .style("left", (d3.mouse(this)[0]) + "px")
-      .style("top", (d3.mouse(this)[1]) + "px")
-  };
-  var hideTooltip = function(d) {
-    Tooltip
-      .style("opacity", 0)
-    d3.select(this)
-      .style("stroke", "none")
-      .style("opacity", 0.8)
-  };
+        };
+        var moveTooltip = function (d) {
+            Tooltip
+                .html(d["SchoolName"])
+                .style("left", (d3.mouse(this)[0]) + "px")
+                .style("top", (d3.mouse(this)[1]) + "px")
+        };
+        var hideTooltip = function (d) {
+            Tooltip
+                .style("opacity", 0)
+            d3.select(this)
+                .style("stroke", "none")
+                .style("opacity", 0.8)
+        };
 
 
         var circles = svg.selectAll("circle")
@@ -61,11 +65,17 @@ function drawMap(boroughs, locations, svg) {
             .attr("SampleId", function (d) {
                 return d.SampleId;
             })
-            .attr("class","brushed")  //original color
+            .attr("PercentTested", function (d) {
+                return d["Percent Tested"];
+            })
+            .attr("BoroughId", function (d) {
+                return d.BoroughId;
+            })
+            .attr("class", "brushed")  //original color
             .attr("r", 3.4)
-                .on("mouseover", showTooltip )
-    .on("mousemove", moveTooltip )
-    .on("mouseleave", hideTooltip );;
+            .on("mouseover", showTooltip)
+            .on("mousemove", moveTooltip)
+            .on("mouseleave", hideTooltip);
 
         addLegend(colorScale);
 
@@ -105,26 +115,17 @@ function drawMap(boroughs, locations, svg) {
             .attr("dy", ".35em")
             .style("text-anchor", "end")
             //.style("fill","black")
-            .style("fill","white")
+            .style("fill", "white")
             .text(function (d) {
-                if(d === 1)
-                {
+                if (d === 1) {
                     return "Manhattan";
-                }
-                else if(d === 2)
-                {
+                } else if (d === 2) {
                     return "Brooklyn";
-                }
-                else if(d === 3)
-                {
+                } else if (d === 3) {
                     return "Bronx";
-                }
-                else if(d === 4)
-                {
+                } else if (d === 4) {
                     return "Queens";
-                }
-                else if(d === 5)
-                {
+                } else if (d === 5) {
                     return "Staten Island";
                 }
             });

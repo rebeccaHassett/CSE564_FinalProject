@@ -1,14 +1,14 @@
 function drawBarChart(data) {
-  var width = 300;
   data["columns"] = ["borough", "SAT Math", "SAT Reading", "SAT Writing", "BoroughId"];
   var myColor = d3.scaleOrdinal(d3.schemeCategory10);
+  //var myColor = ["#419ede", "#1F77B4", "#144c73", "#ffa85b", "#FF7F0E", "#c15a00", "#4bce4b", "#2CA02C", "#1c641c", "#e36667", "#d62728", "#951b1c", "#ba9cd4", "#9467BD", "#6e4196"];
   var svg = d3
     .select("#barchart")
     .append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
     .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    .attr("transform", "translate(" + margin.left + "," + (margin.top - 25) + ")");
 
   // Parse the Data
   var subgroups = data.columns.slice(1);
@@ -22,12 +22,12 @@ function drawBarChart(data) {
   var x = d3.scaleBand().domain(boroughs).range([0, width]).padding([0.2]);
   svg
     .append("g")
-    .attr("transform", "translate(0," + height + ")")
+    .attr("transform", "translate(-5," + height + ")")
     .call(d3.axisBottom(x).tickSize(0));
 
   svg.append("text")
-  .attr("x", width/2 - 30)
-  .attr("y", height + 40)
+  .attr("x", width/2 - 45)
+  .attr("y", height + 30)
   .text("Borough");
   // Add Y axis
   var y = d3.scaleLinear().domain([0, 800]).range([height, 0]);
@@ -35,7 +35,7 @@ function drawBarChart(data) {
 
   svg.append("text")
   .attr("transform", "rotate(-90)")
-  .attr("x", -(height / 2) - 50)
+  .attr("x", -(height / 2) - 65)
   .attr("y", - 40)
   .text("Average SAT Scores");
 
@@ -49,14 +49,14 @@ function drawBarChart(data) {
   // title
   svg
   .append("text")
-  .attr("x", width / 2 - 140)
-  .attr("y", -30)
+  .attr("x", width / 2 - 160)
+  .attr("y", -10)
   .text("Average SAT Scores By Borough")
   .style("font-weight", "bold")
   .attr("fill", "black")
   .style("font-size", "20px");
   // Show the bars
-  svg
+  var rects = svg
     .append("g")
     .selectAll("g")
     // Enter in data = loop group per group
@@ -86,43 +86,7 @@ function drawBarChart(data) {
     .attr("width", xSubgroup.bandwidth())
     .attr("height", function (d) {
       return height - y(d.value);
-    })
-    .on("mouseover", mouseover)
-    .on("mousemove", mousemove)
-    .on("mouseleave", mouseleave)
-    // can add subgroup stuff here
-}
-  // create a tooltip
-  var Tooltip = d3.select("body")
-    .append("div")
-    .style("opacity", 0)
-    .attr("class", "tooltip")
-    .style("background-color", "white")
-    .style("border", "solid")
-    .style("border-width", "2px")
-    .style("border-radius", "5px")
-    .style("padding", "5px")
+    });
 
-  // Three function that change the tooltip when user hover / move / leave a cell
-  var mouseover = function(d) {
-  console.log(d);
-    Tooltip
-      .style("opacity", 1)
-    d3.select(this)
-      .style("stroke", "black")
-      .style("opacity", 1)
-    
-  }
-  var mousemove = function(d) {
-    Tooltip
-      .html( d.key + " Score : " + d.value)
-      .style("left", (d3.mouse(this)[0]+100) + "px")
-      .style("top", (d3.mouse(this)[1]+400) + "px")
-  }
-  var mouseleave = function(d) {
-    Tooltip
-      .style("opacity", 0)
-    d3.select(this)
-      .style("stroke", "none")
-      .style("opacity", 0.8)
-  }
+  return [rects];
+}
