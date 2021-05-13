@@ -30,7 +30,7 @@ axios.get("http://127.0.0.1:5000/api").then(function ({data}) {
 
     var bar_mouseover = function (d) {
         mapElements[1].attr("class", "non_brushed");
-        globalCircles.attr("class", "non_brushed");
+        globalCircles.attr("class", "non_brushed bubbles");
         graphElements[2].style("display", function (d) {
             return "none";
         });
@@ -49,7 +49,7 @@ axios.get("http://127.0.0.1:5000/api").then(function ({data}) {
     };
     var bar_mousemove = function (d) {
         mapElements[1].attr("class", "non_brushed");
-        globalCircles.attr("class", "non_brushed");
+        globalCircles.attr("class", "non_brushed bubbles");
         graphElements[2].style("display", function (d) {
             return "none";
         });
@@ -63,7 +63,7 @@ axios.get("http://127.0.0.1:5000/api").then(function ({data}) {
     };
     var bar_mouseleave = function (d) {
         mapElements[1].attr("class", "brushed");
-        globalCircles.attr("class", "brushed");
+        globalCircles.attr("class", "brushed bubbles");
         graphElements[2].style("display", function (d) {
             return null;
         });
@@ -98,7 +98,7 @@ axios.get("http://127.0.0.1:5000/api").then(function ({data}) {
 
     var histo_ShowTooltip = function (d) {
         mapElements[1].attr("class", "non_brushed");
-        globalCircles.attr("class", "non_brushed");
+        globalCircles.attr("class", "non_brushed bubbles");
         graphElements[2].style("display", function (d) {
             return "none";
         });
@@ -122,7 +122,7 @@ axios.get("http://127.0.0.1:5000/api").then(function ({data}) {
             .style("left", (d3.mouse(this)[0] + 250) + "px")
             .style("top", (d3.mouse(this)[1] + 400) + "px");
         mapElements[1].attr("class", "non_brushed");
-        globalCircles.attr("class", "non_brushed");
+        globalCircles.attr("class", "non_brushed bubbles");
         graphElements[2].style("display", function (d) {
             return "none";
         });
@@ -133,7 +133,7 @@ axios.get("http://127.0.0.1:5000/api").then(function ({data}) {
     // A function that change this tooltip when the leaves a point: just need to set opacity to 0 again
     var histo_HideTooltip = function (d) {
         mapElements[1].attr("class", "brushed");
-        globalCircles.attr("class", "brushed");
+        globalCircles.attr("class", "brushed bubbles");
         graphElements[2].style("display", function (d) {
             return null;
         });
@@ -254,7 +254,7 @@ axios.get("http://127.0.0.1:5000/api").then(function ({data}) {
         }
 
         mapElements[1].attr("class", "non_brushed");
-        globalCircles.attr("class", "non_brushed");
+        globalCircles.attr("class", "non_brushed bubbles");
         biPlotScatters.attr("class", "non_brushed");
         brushedSampleIds.length = 0;
 
@@ -282,7 +282,7 @@ axios.get("http://127.0.0.1:5000/api").then(function ({data}) {
     if (d3.event.selection != null) {
       // set circles to "non_brushed"
       mapElements[1].attr("class", "non_brushed");
-      globalCircles.attr("class", "non_brushed");
+      globalCircles.attr("class", "non_brushed bubbles");
       biPlotScatters.attr("class", "non_brushed");
       brushedSampleIds.length = 0;
       graphElements[2].style("display", function (d) {
@@ -343,7 +343,7 @@ axios.get("http://127.0.0.1:5000/api").then(function ({data}) {
   function highlightBrushedBubbles() {
     if (d3.event.selection != null) {
       // set circles to "non_brushed"
-      globalCircles.attr("class", "non_brushed");
+      globalCircles.attr("class", "non_brushed bubbles");
       mapElements[1].attr("class", "non_brushed");
       graphElements[2].style("display", function (d) {
         return "none";
@@ -368,7 +368,7 @@ axios.get("http://127.0.0.1:5000/api").then(function ({data}) {
 
           return isBrushedCircle;
         })
-        .attr("class", "brushed");
+        .attr("class", "brushed bubbles");
     }
   }
 
@@ -418,7 +418,7 @@ axios.get("http://127.0.0.1:5000/api").then(function ({data}) {
         if (d3.event.selection != null) {
 
             // set circles to "non_brushed"
-            globalCircles.attr("class", "non_brushed");
+            globalCircles.attr("class", "non_brushed bubbles");
             mapElements[1].attr("class", "non_brushed");
             graphElements[2].style("display", function (d) {
                 return "none";
@@ -447,7 +447,7 @@ axios.get("http://127.0.0.1:5000/api").then(function ({data}) {
 
                 return isBrushedCircle;
             })
-                .attr("class", "brushed");
+                .attr("class", "brushed bubbles");
 
         }
     }
@@ -475,7 +475,7 @@ axios.get("http://127.0.0.1:5000/api").then(function ({data}) {
     function highlightBrushedScatters() {
         if (d3.event.selection != null) {
             // set circles to "non_brushed"
-            globalCircles.attr("class", "non_brushed");
+            globalCircles.attr("class", "non_brushed bubbles");
             mapElements[1].attr("class", "non_brushed");
             graphElements[2].style("display", function (d) {
                 return "none";
@@ -525,19 +525,19 @@ axios.get("http://127.0.0.1:5000/api").then(function ({data}) {
     function bubbleBrushPercentTested(enrollLowRange, enrollHighRange) {
         globalCircles.filter(function (elem) {
             return enrollLowRange <= elem["Percent Tested"] && elem["Percent Tested"] <= enrollHighRange;
-        }).attr("class", "brushed");
+        }).attr("class", "brushed bubbles");
     }
 
     function bubbleBrushBorough(BoroughId) {
         globalCircles.filter(function (elem) {
             return elem.BoroughId == BoroughId;
-        }).attr("class", "brushed");
+        }).attr("class", "brushed bubbles");
     }
 
     function bubbleBrushSample(SampleId) {
         globalCircles.filter(function (elem) {
             return elem.SampleId == SampleId;
-        }).attr("class", "brushed");
+        }).attr("class", "brushed bubbles");
     }
 
     function parallelCoordsBrushPercentTested(enrollLowRange, enrollHighRange) {
