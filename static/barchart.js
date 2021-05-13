@@ -11,7 +11,7 @@ function drawBarChart(data) {
     .attr("transform", "translate(" + margin.left + "," + (margin.top - 25) + ")");
 
   // Parse the Data
-  var subgroups = data.columns.slice(1);
+  var subgroups = data.columns.slice(1,4);
   var boroughs = d3
     .map(data, function (d) {
       return d.borough;
@@ -30,7 +30,7 @@ function drawBarChart(data) {
   .attr("y", height + 30)
   .text("Borough");
   // Add Y axis
-  var y = d3.scaleLinear().domain([0, 800]).range([height, 0]);
+  var y = d3.scaleLinear().domain([0, 500]).range([height, 0]);
   svg.append("g").call(d3.axisLeft(y));
 
   svg.append("text")

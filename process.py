@@ -92,15 +92,15 @@ def getPCAData():
 
     biPlotSamples = []
     num = 0 
-    iterate_list = df_standard.tolist()
     min_x,max_x = min(pca_data[0]), max(pca_data[0])
     min_y,max_y = min(pca_data[1]), max(pca_data[1])
 
-    for index, row in numerical_df.iterrows():
+    for index, row in new_df.iterrows():
         biPlotSample = {}
         biPlotSample["SampleId"] = index
         biPlotSample["x"] = pca_data[0][num] / (max_x - min_x)
         biPlotSample["y"] = pca_data[1][num] / (max_y - min_y)
+        biPlotSample["BoroughId"] = getBoroughId(row["Borough"])
         num +=1
         biPlotSamples.append(biPlotSample)
 

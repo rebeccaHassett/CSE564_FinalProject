@@ -32,7 +32,7 @@ function drawBubbleChart(data) {
     // Add X axis
     var x = d3.scaleLinear()
         .domain([0, 100])
-        .range([0, width]);
+        .range([0, width - 50]);
     svg.append("g")
         .attr("transform", "translate(0," + height + ")")
         .call(d3.axisBottom(x));
@@ -42,7 +42,7 @@ function drawBubbleChart(data) {
         .append("text")
         .attr("x", 337)
         .attr("y", height + 40)
-        .text("Percent Black");
+        .text("Percent Race");
 
     //Add Title
     svg

@@ -68,10 +68,10 @@ function drawHistogram(data) {
 
     svg
         .append("text")
-        //.attr("transform", "rotate(-90)")
-        .attr("x", 20)
-        .attr("y", 125)
-        .text("Frequency");
+        .attr("transform", "rotate(-90)")
+        .attr("x", -(height / 2) - 40)
+        .attr("y", 42)
+        .text("Frequency")
 
     svg.append("g")
         .attr("transform", "translate(" + margin.left + ",0)")

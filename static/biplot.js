@@ -1,6 +1,7 @@
 function drawBiPlot(data) {
     const { eigenvector, pca_data,attribute,biPlotSampleID } = data;
     console.log(data);
+    var myColor = d3.scaleOrdinal(d3.schemeCategory10);
     var svg = d3.select("#biplot")
       .append("svg")
       .attr("width", width + margin.left + margin.right)
@@ -69,11 +70,14 @@ function drawBiPlot(data) {
       .attr("class", "biplot-scatters")
       .attr("cx", (d) => x(d.x))
       .attr("cy", (d) => y(d.y))
-      .attr("r", 1.5)
+      .attr("r", 1.8)
       .attr("SampleId", function (d) {
         return d["SampleId"];
       })
-      .style("fill", "#3498db");
+      .style("fill", function (d) {
+        return myColor(d["BoroughId"]);
+      });
+      // .style("fill", "#3498db");
 
       
     //add lines
@@ -87,12 +91,24 @@ function drawBiPlot(data) {
       .data(biPlot_line)
       .enter()
       .append("line")
-      .style("stroke", "red")
+      .style("stroke", "#b4a5a5")
         .style("stroke-width", "2.5px")
       .attr("x1", x(0))
       .attr("y1", y(0))
       .attr("x2", (d) => x(d.x))
       .attr("y2", (d) => y(d.y));
 
+    line.selectAll(".barsEndlineText")
+    .data(biPlot_line)
+    .enter()
+    .append("text")
+    .attr('class', 'barsEndlineText')
+    .attr('text-anchor', 'middle')
+    .attr("x", (d) => x(d.x))
+    .attr("y", (d) => y(d.y))
+    .attr("font-size","5px")
+    .attr("font-weight","bold")
+    .text((d)=>d.attribute) 
+    
     return [svg];
   }
