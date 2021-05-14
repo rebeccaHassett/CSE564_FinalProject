@@ -31,9 +31,9 @@ function drawBiPlot(data) {
   
     svg
       .append("text")
-      .attr("x", (width - 50) / 2)
+      .attr("x", (width - 50) / 2 - 30)
       .attr("y", -10)
-      .text("BiPlot")
+      .text("PCA - Biplot")
       .style("font-weight", "bold")
       .style("font-size", "20px");
   

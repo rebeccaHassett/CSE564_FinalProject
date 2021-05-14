@@ -11,13 +11,13 @@ function drawParallelCoordinates(data, dimensions) {
         .append("g")
         .attr("transform", "translate(" + 10 + "," + (margin.top + 30) + ")");
 
-    svg
-        .append("text")
-        .attr("x", 350)
-        .attr("y", -65)
-        .text("Parallel Coordinates Plot")
-        .style("font-weight", "bold")
-        .style("font-size", "20px");
+    // svg
+    //     .append("text")
+    //     .attr("x", 350)
+    //     .attr("y", -65)
+    //     .text("Parallel Coordinates Plot")
+    //     .style("font-weight", "bold")
+    //     .style("font-size", "20px");
 
 
     var x = d3.scaleBand().rangeRound([0, parallelCoordsWidth]).padding(1),

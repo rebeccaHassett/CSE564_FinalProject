@@ -52,13 +52,13 @@ function drawHistogram(data) {
         .attr("transform", "translate(0," + (height - margin.bottom) + ")")
         .call(d3.axisBottom(x))
         .append("text")
-        .attr("x", ((width + 105) / 2))
+        .attr("x", ((width + 105) / 2 + 150))
         .attr("y", -175)
         .attr("fill", "#000")
         .attr("text-anchor", "end")
         .attr("font-weight", "bold")
         .attr("font-size", "20px")
-        .text("Histogram");
+        .text("Percentage of Student Population Tested");
 
     svg
         .append("text")
