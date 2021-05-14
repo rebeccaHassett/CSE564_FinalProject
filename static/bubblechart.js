@@ -47,9 +47,10 @@ function drawBubbleChart(data) {
     //Add Title
     svg
         .append("text")
-        .attr("x", (width - margin.right - margin.left) / 2)
+        .attr("x", (width - margin.right - margin.left) / 2 - 180)
         .attr("y", -30)
-        .text("Bubble Chart")
+        // .text("Bubble Chart")
+        .text("SAT Scores By Percent Race and Total Enrollment")
         .style("font-weight", "bold")
         .attr("fill", "black")
         .style("font-size", "20px");
